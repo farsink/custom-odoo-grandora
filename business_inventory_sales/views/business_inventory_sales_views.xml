@@ -1,0 +1,51 @@
+<odoo>
+    <record id="business_inventory_sales_note_view_tree" model="ir.ui.view">
+        <field name="name">business.inventory.sales.note.list</field>
+        <field name="model">business.inventory.sales.note</field>
+        <field name="arch" type="xml">
+            <list string="Inventory/Sales Notes">
+                <field name="priority"/>
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="sale_order_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="business_inventory_sales_note_view_form" model="ir.ui.view">
+        <field name="name">business.inventory.sales.note.form</field>
+        <field name="model">business.inventory.sales.note</field>
+        <field name="arch" type="xml">
+            <form string="Inventory/Sales Note">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="priority"/>
+                        <field name="product_id"/>
+                        <field name="sale_order_id"/>
+                        <field name="active"/>
+                    </group>
+                    <group>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="business_inventory_sales_note_action" model="ir.actions.act_window">
+        <field name="name">Inventory/Sales Notes</field>
+        <field name="res_model">business.inventory.sales.note</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="business_inventory_sales_menu_root"
+              name="Business Custom"
+              parent="sale.sale_menu_root"
+              sequence="95"/>
+    <menuitem id="business_inventory_sales_note_menu"
+              name="Inventory/Sales Notes"
+              parent="business_inventory_sales_menu_root"
+              action="business_inventory_sales_note_action"
+              sequence="10"/>
+</odoo>
