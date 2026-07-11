@@ -1,0 +1,14 @@
+<odoo>
+    <record id="action_admin_home" model="ir.actions.client">
+        <field name="name">Admin Home</field>
+        <field name="tag">custom_admin_home.admin_home</field>
+        <field name="path">admin-home</field>
+    </record>
+
+    <menuitem id="menu_admin_home_root"
+              name="Admin Home"
+              sequence="1"
+              action="action_admin_home"
+              groups="base.group_system"
+              web_icon="base,static/description/modules.png"/>
+</odoo>

@@ -1,0 +1,69 @@
+.o_custom_admin_home {
+    background: linear-gradient(135deg, #f8f5fb 0%, #eef5ff 100%);
+
+    .o_custom_admin_home_header {
+        max-width: 880px;
+    }
+
+    .o_custom_admin_home_grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1rem;
+        max-width: 1280px;
+    }
+
+    .o_custom_admin_home_card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        min-height: 112px;
+        padding: 1.1rem;
+        border: 1px solid rgba(113, 75, 103, 0.12);
+        border-radius: 1rem;
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 10px 30px rgba(35, 31, 32, 0.06);
+        transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+
+        &:hover,
+        &:focus-visible {
+            transform: translateY(-2px);
+            border-color: rgba(113, 75, 103, 0.35);
+            box-shadow: 0 14px 34px rgba(35, 31, 32, 0.12);
+        }
+    }
+
+    .o_custom_admin_home_icon {
+        display: grid;
+        place-items: center;
+        flex: 0 0 56px;
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+
+        img {
+            max-width: 42px;
+            max-height: 42px;
+        }
+
+        i {
+            color: #714b67;
+            font-size: 1.6rem;
+        }
+    }
+
+    .o_custom_admin_home_app_name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #2f2f2f;
+        font-size: 1.08rem;
+        font-weight: 700;
+    }
+
+    .o_custom_admin_home_app_hint {
+        color: #6c757d;
+        font-size: 0.875rem;
+    }
+}

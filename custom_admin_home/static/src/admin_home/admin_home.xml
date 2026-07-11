@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="custom_admin_home.AdminHome">
+        <div class="o_custom_admin_home h-100 overflow-auto">
+            <div class="container-fluid py-4 py-lg-5">
+                <div class="o_custom_admin_home_header mb-4">
+                    <p class="text-uppercase fw-semibold text-primary mb-2">Admin Home</p>
+                    <h1 class="display-6 fw-bold mb-2">Installed Applications</h1>
+                    <p class="text-muted fs-5 mb-0" t-esc="subtitle"/>
+                </div>
+
+                <t t-if="state.isAdmin">
+                    <div t-if="apps.length" class="o_custom_admin_home_grid">
+                        <button t-foreach="apps" t-as="app" t-key="app.id"
+                                type="button"
+                                class="o_custom_admin_home_card text-start"
+                                t-att-data-menu-xmlid="app.xmlid"
+                                t-on-click="() => this.openApp(app)">
+                            <div class="o_custom_admin_home_icon">
+                                <img t-if="app.webIconData" t-att-src="app.webIconData" t-att-alt="app.name"/>
+                                <i t-else="" class="oi oi-apps" aria-hidden="true"/>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="o_custom_admin_home_app_name" t-esc="app.name"/>
+                                <div class="o_custom_admin_home_app_hint">Open app</div>
+                            </div>
+                        </button>
+                    </div>
+                    <div t-else="" class="alert alert-info">
+                        No installed applications are available for this user.
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="alert alert-warning">
+                        This home screen is available to administrators only.
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>
