@@ -2,8 +2,9 @@
 
 import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
+import { user } from "@web/core/user";
 import { useService } from "@web/core/utils/hooks";
-import { Component, onWillStart, useState } from "@odoo/owl";
+import { Component } from "@odoo/owl";
 import { standardActionServiceProps } from "@web/webclient/actions/action_service";
 
 export class CustomAdminHome extends Component {
@@ -12,16 +13,14 @@ export class CustomAdminHome extends Component {
 
     setup() {
         this.menuService = useService("menu");
-        this.userService = useService("user");
-        this.state = useState({ isAdmin: false });
+    }
 
-        onWillStart(async () => {
-            this.state.isAdmin = await this.userService.hasGroup("base.group_system");
-        });
+    get isAdmin() {
+        return Boolean(user.isSystem || user.isAdmin);
     }
 
     get apps() {
-        if (!this.state.isAdmin) {
+        if (!this.isAdmin) {
             return [];
         }
         return this.menuService
