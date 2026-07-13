@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_grandora_invoice" model="report.paperformat">
+        <field name="name">Grandora Invoice A4</field>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+        <field name="css_margins" eval="True"/>
+    </record>
+
+    <record id="account.account_invoices" model="ir.actions.report">
+        <field name="name">Invoice PDF</field>
+        <field name="paperformat_id" ref="grandora_invoice_report.paperformat_grandora_invoice"/>
+    </record>
+
+    <record id="account.account_invoices_without_payment" model="ir.actions.report">
+        <field name="name">PDF without Payment</field>
+        <field name="paperformat_id" ref="grandora_invoice_report.paperformat_grandora_invoice"/>
+    </record>
+</odoo>

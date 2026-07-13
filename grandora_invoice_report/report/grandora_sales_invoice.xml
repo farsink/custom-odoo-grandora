@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_invoice_document_grandora" inherit_id="account.report_invoice_document" priority="1000">
+        <xpath expr="//t[@t-call='web.external_layout']" position="replace">
+            <t t-set="o" t-value="o.with_context(lang=lang)"/>
+            <t t-set="delivery_partner" t-value="o._grandora_delivery_partner()"/>
+            <t t-set="report_lines" t-value="o._grandora_report_lines()"/>
+            <style>
+                .grandora-invoice-page, .grandora-invoice-page * { box-sizing: border-box; }
+                .grandora-invoice-page {
+                    width: 210mm;
+                    min-height: 297mm;
+                    padding: 20px 24px;
+                    background: #fff;
+                    color: #000;
+                    font-family: "Times New Roman", Times, serif;
+                    font-size: 12px;
+                    line-height: 1.25;
+                }
+                .grandora-flex { display: flex; }
+                .grandora-grid { display: grid; }
+                .grandora-between { justify-content: space-between; }
+                .grandora-center { text-align: center; }
+                .grandora-right { text-align: right; }
+                .grandora-bold { font-weight: 700; }
+                .grandora-maroon { color: #8a151b; }
+                .grandora-gold { color: #b0966a; }
+                .grandora-pink { background: #f3e6ea; }
+                .grandora-header { align-items: flex-start; margin-bottom: 8px; }
+                .grandora-logo-block { width: 33.33%; padding-top: 8px; text-align: center; }
+                .grandora-logo { width: 100%; max-height: 82px; object-fit: contain; }
+                .grandora-company { width: 50%; padding: 8px 0 0 20px; font-size: 11px; }
+                .grandora-ar { width: 33.33%; padding-top: 8px; text-align: right; }
+                .grandora-ar-title { font-size: 44px; line-height: .9; font-weight: 700; }
+                .grandora-ar-subtitle { font-size: 17px; font-weight: 700; color: #b0966a; }
+                .grandora-divider { height: 3px; background: #8a151b; margin-bottom: 4px; }
+                .grandora-title-row { align-items: flex-end; margin-bottom: 4px; }
+                .grandora-title-row &gt; div { width: 33.33%; }
+                .grandora-title { width: 33.33%; text-align: center; font-size: 24px; font-weight: 400; letter-spacing: .025em; }
+                .grandora-box { border: 1px solid #000; }
+                .grandora-details { grid-template-columns: 1.2fr 1.2fr 1fr; margin-bottom: 8px; }
+                .grandora-panel { min-height: 140px; padding: 8px 16px 8px 8px; border-right: 1px solid #000; display: flex; flex-direction: column; justify-content: space-between; }
+                .grandora-panel:last-child { border-right: 0; padding: 4px 8px 8px; display: block; }
+                .grandora-kv { display: grid; grid-template-columns: 80px 10px 1fr; row-gap: 2px; align-items: start; }
+                .grandora-kv-small { display: grid; grid-template-columns: 50px 10px 1fr; row-gap: 2px; }
+                .grandora-kv-right { display: grid; grid-template-columns: 90px 10px 1fr; row-gap: 2px; align-items: start; }
+                .grandora-mt { margin-top: 4px; }
+                .grandora-mb { margin-bottom: 4px; }
+                .grandora-mb2 { margin-bottom: 8px; }
+                .grandora-lines-wrap { border: 1px solid #000; min-height: 108mm; }
+                .grandora-lines { width: 100%; border-collapse: collapse; font-size: 11px; }
+                .grandora-lines th, .grandora-lines td { border-left: 1px solid #000; border-right: 1px solid #000; padding: 5px 8px; vertical-align: top; }
+                .grandora-lines th { border-bottom: 1px solid #000; text-align: center; font-weight: 400; }
+                .grandora-lines th:first-child, .grandora-lines td:first-child { border-left: 0; }
+                .grandora-lines th:last-child, .grandora-lines td:last-child { border-right: 0; }
+                .grandora-empty-row td { height: 24px; }
+                .grandora-footer { border: 1px solid #000; border-top: 0; }
+                .grandora-words { padding: 8px; align-items: center; border-bottom: 1px solid #000; }
+                .grandora-words-left { width: 75%; gap: 8px; }
+                .grandora-words-left .label { width: 64px; }
+                .grandora-total { width: 25%; justify-content: space-between; padding-right: 8px; }
+                .grandora-remarks { padding: 8px; border-bottom: 1px solid #000; align-items: center; }
+                .grandora-remarks .label { width: 96px; font-size: 13px; font-weight: 700; }
+                .grandora-remarks .text { flex: 1; text-align: center; }
+                .grandora-bottom { grid-template-columns: 1.5fr 1.5fr 1fr; min-height: 140px; }
+                .grandora-bottom-panel { padding: 8px; border-right: 1px solid #000; }
+                .grandora-bottom-panel:last-child { border-right: 0; }
+                .grandora-terms { font-size: 10px; line-height: 1.25; }
+                .grandora-terms h3 { margin: 0 0 4px; font-size: 11px; }
+                .grandora-terms ol { margin: 0; padding-left: 14px; }
+                .grandora-terms li { margin-bottom: 4px; }
+                .grandora-receipt { display: flex; flex-direction: column; justify-content: space-between; }
+                .grandora-sign-line { display: flex; align-items: end; gap: 8px; margin-top: 10px; }
+                .grandora-sign-line .line { flex: 1; border-bottom: 1px solid #000; height: 16px; }
+                .grandora-delivered { display: flex; flex-direction: column; }
+                .grandora-delivered-box { height: 48px; }
+                @page { size: A4; margin: 0; }
+            </style>
+            <div class="article grandora-invoice-page" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id" t-att-data-oe-lang="o.env.context.get('lang')">
+                <header class="grandora-flex grandora-between grandora-header">
+                    <div class="grandora-logo-block">
+                        <img src="/grandora_invoice_report/static/src/img/grandora_logo.png" alt="Grandora Gourmet Trading" class="grandora-logo"/>
+                        <div class="grandora-maroon grandora-bold" style="font-size:14px;">www.grandoragourmet.com</div>
+                    </div>
+                    <div class="grandora-company grandora-maroon">
+                        <div class="grandora-bold" style="font-size:13.5px; margin-bottom:4px;">Grandora Gourmet Trading W.L.L</div>
+                        <div>Tel. No : <span t-esc="o.company_id.phone or '77848974'"/></div>
+                        <div>P.O. Box : <span t-esc="o.company_id.zip or '30264'"/></div>
+                        <div><span t-esc="o.company_id.city or 'Doha'"/> - <span t-esc="o.company_id.country_id.name or 'Qatar'"/></div>
+                        <div>Email : <span t-esc="o.company_id.email or 'info@grandoragourmet.com'"/></div>
+                    </div>
+                    <div class="grandora-ar grandora-maroon">
+                        <div class="grandora-ar-title" dir="rtl">جراندورا</div>
+                        <div class="grandora-ar-subtitle" dir="rtl">لتجارة المواد الغذائية</div>
+                    </div>
+                </header>
+
+                <div class="grandora-divider"></div>
+
+                <div class="grandora-flex grandora-between grandora-title-row">
+                    <div></div>
+                    <h2 class="grandora-title">SALES INVOICE</h2>
+                    <div class="grandora-right" style="font-size:13px;">Division Name &amp;nbsp;: &amp;nbsp;<span t-esc="o.division_name or 'RESTAURANT'"/></div>
+                </div>
+
+                <div class="grandora-box grandora-grid grandora-details">
+                    <div class="grandora-panel">
+                        <div>
+                            <div class="grandora-mb"><u>INVOICE TO :</u></div>
+                            <div class="grandora-kv grandora-mb">
+                                <div>Customer ID</div><div>:</div><div t-esc="o.partner_id.ref or '-'"/>
+                            </div>
+                            <div class="grandora-mb2">
+                                <span t-esc="o.partner_id.name or ''"/><br/>
+                                <span t-if="o.partner_id.street" t-esc="o.partner_id.street"/><br t-if="o.partner_id.street"/>
+                                <span t-if="o.partner_id.street2" t-esc="o.partner_id.street2"/><br t-if="o.partner_id.street2"/>
+                                <span t-if="o.partner_id.city" t-esc="o.partner_id.city"/><br t-if="o.partner_id.city"/>
+                                <span t-esc="o.partner_id.country_id.name or ''"/>
+                            </div>
+                        </div>
+                        <div class="grandora-kv-small">
+                            <div>Tel no</div><div></div><div t-esc="o.partner_id.phone or o.partner_id.mobile or '-'"/>
+                            <div>Fax no</div><div></div><div>-</div>
+                        </div>
+                    </div>
+
+                    <div class="grandora-panel">
+                        <div>
+                            <div class="grandora-mb grandora-kv">
+                                <div><u>DELIVERY TO</u></div><div><u>:</u></div><div><u t-esc="delivery_partner.ref or o.partner_id.ref or '-'"/></div>
+                            </div>
+                            <div class="grandora-kv grandora-mb">
+                                <div>Area</div><div>:</div><div t-esc="delivery_partner.street2 or delivery_partner.city or '-'"/>
+                            </div>
+                            <div class="grandora-mb2">
+                                <span t-esc="delivery_partner.name or o.partner_id.name or ''"/><br/>
+                                <span t-if="delivery_partner.street" t-esc="delivery_partner.street"/><br t-if="delivery_partner.street"/>
+                                <span t-if="delivery_partner.street2" t-esc="delivery_partner.street2"/><br t-if="delivery_partner.street2"/>
+                                <span t-if="delivery_partner.city" t-esc="delivery_partner.city"/><br t-if="delivery_partner.city"/>
+                                <span t-esc="delivery_partner.country_id.name or ''"/>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="grandora-kv-small grandora-mb2">
+                                <div>Tel no</div><div></div><div t-esc="delivery_partner.phone or delivery_partner.mobile or '-'"/>
+                                <div>Fax no</div><div></div><div>-</div>
+                            </div>
+                            <div class="grandora-kv">
+                                <div>Printed</div><div>:</div><div t-esc="o._grandora_printed_at()"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grandora-panel">
+                        <div class="grandora-kv-right">
+                            <div><u>INVOICE #</u></div><div>:</div><div t-esc="o.name if o.name and o.name != '/' else 'Draft'"/>
+                            <div class="grandora-mt">Date</div><div class="grandora-mt">:</div><div class="grandora-mt" t-esc="o.invoice_date and o.invoice_date.strftime('%d/%m/%Y') or ''"/>
+                            <div>Customer PO</div><div>:</div><div t-esc="o.ref or '-'"/>
+                            <div>Sales Person</div><div>:</div><div t-esc="o.invoice_user_id.name or o.user_id.name or '-'"/>
+                            <div class="grandora-mt">Currency</div><div class="grandora-mt">:</div><div class="grandora-mt" t-esc="o.currency_id.name or ''"/>
+                            <div>SO Number</div><div>:</div><div t-esc="o.sale_order_number or o.invoice_origin or '-'"/>
+                            <div>Reference</div><div>:</div><div t-esc="o.invoice_origin or o.payment_reference or '-'"/>
+                            <div class="grandora-mt">Delivery Time</div><div class="grandora-mt">:</div><div class="grandora-mt" t-esc="o.delivery_time or '-'"/>
+                            <div>Payment Terms</div><div>:</div><div t-esc="o.invoice_payment_term_id.name or '-'"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grandora-lines-wrap">
+                    <table class="grandora-lines">
+                        <thead>
+                            <tr class="grandora-pink">
+                                <th style="width:4%;">SL.<br/>No.</th>
+                                <th style="width:10%;">CODE</th>
+                                <th style="width:48%;">DESCRIPTION</th>
+                                <th style="width:8%;">UOM</th>
+                                <th style="width:10%;">QUANTITY</th>
+                                <th style="width:10%;">PRICE</th>
+                                <th style="width:10%;">AMOUNT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="report_lines" t-as="line">
+                                <tr>
+                                    <td class="grandora-center" t-esc="line_index + 1"/>
+                                    <td class="grandora-center" t-esc="line.product_id.default_code or '-'"/>
+                                    <td><span t-esc="line.name or line.product_id.display_name or ''"/></td>
+                                    <td class="grandora-center" t-esc="line.product_uom_id.name or ''"/>
+                                    <td class="grandora-right" t-esc="'%.3f' % line.quantity"/>
+                                    <td class="grandora-right" t-esc="'%.2f' % line.price_unit"/>
+                                    <td class="grandora-right" t-esc="'{:,.2f}'.format(line.price_subtotal)"/>
+                                </tr>
+                            </t>
+                            <t t-if="not report_lines">
+                                <tr><td colspan="7" class="grandora-center">No invoice lines</td></tr>
+                            </t>
+                            <tr class="grandora-empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr class="grandora-empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr class="grandora-empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr class="grandora-empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr class="grandora-empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="grandora-footer">
+                    <div class="grandora-flex grandora-words">
+                        <div class="grandora-flex grandora-words-left">
+                            <span class="label">In words</span><span>:</span>
+                            <span><span t-esc="o.currency_id.name"/> &amp;nbsp;&amp;nbsp;&amp;nbsp; *** <span t-esc="o.amount_total_words or o.currency_id.amount_to_text(o.amount_total)"/></span>
+                        </div>
+                        <div class="grandora-flex grandora-total">
+                            <span t-esc="o.currency_id.name"/>
+                            <span>Total</span>
+                            <span class="grandora-right" t-esc="'{:,.2f}'.format(o.amount_total)"/>
+                        </div>
+                    </div>
+                    <div class="grandora-flex grandora-remarks grandora-pink">
+                        <div class="label">Remarks</div>
+                        <div class="text">All Payments should be made through Commercial Bank of Qatar , A/C# 4570-760664-001</div>
+                        <div class="label grandora-right" dir="rtl">ملاحظات</div>
+                    </div>
+                    <div class="grandora-grid grandora-bottom">
+                        <div class="grandora-bottom-panel grandora-terms">
+                            <h3 class="grandora-bold">TERMS &amp; CONDITIONS</h3>
+                            <ol>
+                                <li>Goods must be inspected upon delivery. No claims for shortages, damages, or incorrect deliveries will be accepted after receipt and acknowledgment.</li>
+                                <li>Goods sold are non-returnable and non-exchangeable except for approved quality defects.</li>
+                                <li>Payments must be made according to the agreed terms and in favour of Grandora Gourmet Trading.</li>
+                                <li>Grandora Gourmet Trading is not responsible for goods that are improperly stored or used after their expiry date.</li>
+                            </ol>
+                        </div>
+                        <div class="grandora-bottom-panel grandora-receipt">
+                            <div class="grandora-flex grandora-between grandora-mb2">
+                                <span>Customer Receipt</span><span dir="rtl" class="grandora-bold">إيصال العميل</span>
+                            </div>
+                            <div class="grandora-flex grandora-between grandora-mb2" style="font-size:11px;">
+                                <span style="width:60%;">Received in good condition except as Stated above.</span>
+                                <span dir="rtl" class="grandora-right grandora-bold" style="width:40%;">استلمت البضاعة في حالة جيدة ماعدا ماهو مدون أعلاه.</span>
+                            </div>
+                            <div>
+                                <div class="grandora-sign-line"><span style="width:56px;">Signature</span><div class="line"></div><span dir="rtl" class="grandora-right grandora-bold" style="width:56px;">التوقيع</span></div>
+                                <div class="grandora-sign-line"><span style="width:56px;">Name</span><div class="line"></div><span dir="rtl" class="grandora-right grandora-bold" style="width:56px;">الاسم</span></div>
+                                <div class="grandora-sign-line"><span style="width:56px;">Date</span><div class="line"></div><span dir="rtl" class="grandora-right grandora-bold" style="width:56px;">التاريخ</span></div>
+                            </div>
+                        </div>
+                        <div class="grandora-bottom-panel grandora-delivered">
+                            <div class="grandora-mb">Delivered By :</div>
+                            <div class="grandora-delivered-box"></div>
+                            <div class="grandora-mt">Date : ........................</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

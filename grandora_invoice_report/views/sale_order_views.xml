@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_grandora_invoice_report" model="ir.ui.view">
+        <field name="name">sale.order.form.grandora.invoice.report</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="division_name" placeholder="RESTAURANT" readonly="state in ['cancel', 'sale']"/>
+                <field name="delivery_time" placeholder="e.g. 09:00 AM - 12:00 PM" readonly="state in ['cancel', 'sale']"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
