@@ -259,4 +259,86 @@
             </div>
         </xpath>
     </template>
+
+
+    <template id="report_invoice_browser_print">
+        <t t-call="web.html_container">
+            <style type="text/css">
+                @page {
+                    size: A4 portrait;
+                    margin: 0;
+                }
+                @media screen {
+                    body {
+                        background: #e9ecef !important;
+                    }
+                    .grandora-browser-print-toolbar {
+                        position: sticky;
+                        top: 0;
+                        z-index: 1000;
+                        display: flex;
+                        justify-content: center;
+                        gap: 8px;
+                        padding: 12px;
+                        background: rgba(248, 249, 250, 0.96);
+                        border-bottom: 1px solid #d8dde2;
+                        font-family: Arial, sans-serif;
+                    }
+                    .grandora-browser-print-toolbar button {
+                        padding: 8px 14px;
+                        border: 1px solid #714b67;
+                        border-radius: 4px;
+                        background: #714b67;
+                        color: #fff;
+                        font-size: 14px;
+                        cursor: pointer;
+                    }
+                    .grandora-browser-print-toolbar .secondary {
+                        background: #fff;
+                        color: #714b67;
+                    }
+                    .grandora-invoice-page {
+                        margin: 12px auto;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, .18);
+                    }
+                }
+                @media print {
+                    html, body {
+                        width: 210mm;
+                        min-height: 297mm;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        background: #fff !important;
+                    }
+                    .grandora-browser-print-toolbar,
+                    .no-print {
+                        display: none !important;
+                    }
+                    .grandora-invoice-page {
+                        margin: 0 !important;
+                        box-shadow: none !important;
+                    }
+                    .grandora-lines tr,
+                    .grandora-bottom-panel {
+                        page-break-inside: avoid;
+                    }
+                }
+            </style>
+            <div class="grandora-browser-print-toolbar no-print">
+                <button type="button" onclick="window.print();">Print / Save as PDF</button>
+                <button type="button" class="secondary" onclick="window.close();">Close</button>
+            </div>
+            <t t-foreach="docs" t-as="o">
+                <t t-set="lang" t-value="o.partner_id.lang"/>
+                <t t-call="account.report_invoice_document" t-lang="lang"/>
+            </t>
+            <script type="text/javascript">
+                window.addEventListener('load', function () {
+                    setTimeout(function () {
+                        window.print();
+                    }, 500);
+                });
+            </script>
+        </t>
+    </template>
 </odoo>

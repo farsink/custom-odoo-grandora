@@ -20,7 +20,25 @@
     </record>
 
     <record id="account.account_invoices_without_payment" model="ir.actions.report">
-        <field name="name">PDF without Payment</field>
+        <field name="name">Print Invoice (Browser)</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">grandora_invoice_report.report_invoice_browser_print</field>
+        <field name="report_file">grandora_invoice_report.report_invoice_browser_print</field>
+        <field name="paperformat_id" ref="grandora_invoice_report.paperformat_grandora_invoice"/>
+    </record>
+
+    <record id="action_report_grandora_invoice_browser" model="ir.actions.report">
+        <field name="name">Print Grandora Invoice</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">grandora_invoice_report.report_invoice_browser_print</field>
+        <field name="report_file">grandora_invoice_report.report_invoice_browser_print</field>
+        <!-- Helper action for direct/browser print rendering. The standard bound
+             invoice print action above is renamed/repointed to avoid duplicate
+             entries in the Print menu. -->
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[('move_type', 'in', ('out_invoice', 'out_refund', 'out_receipt'))]"/>
         <field name="paperformat_id" ref="grandora_invoice_report.paperformat_grandora_invoice"/>
     </record>
 </odoo>
