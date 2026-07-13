@@ -65,13 +65,10 @@
                 .grandora-fill-row { height: 100%; }
                 .grandora-fill-row td { height: 100%; padding: 0 8px; }
                 .grandora-footer { border: 1px solid #000; }
-                .grandora-words { display: grid; grid-template-columns: 5% 10% 47% 8% 10% 10% 10%; align-items: center; border-bottom: 1px solid #000; }
-                .grandora-words > div { padding: 8px 6px; min-height: 31px; }
-                .grandora-words-left { grid-column: 1 / span 4; display: flex; gap: 8px; border-right: 1px solid #000; }
+                .grandora-words { display: flex; align-items: center; border-bottom: 1px solid #000; padding: 8px; min-height: 31px; }
+                .grandora-words-left { flex: 1 1 auto; display: flex; gap: 8px; }
                 .grandora-words-left .label { width: 64px; }
-                .grandora-words-currency { grid-column: 5; text-align: center; border-right: 1px solid #000; }
-                .grandora-words-total-label { grid-column: 6; text-align: center; border-right: 1px solid #000; }
-                .grandora-words-total-amount { grid-column: 7; text-align: right; }
+                .grandora-words-total { flex: 0 0 240px; display: flex; justify-content: space-between; gap: 18px; padding-left: 16px; }
                 .grandora-remarks { padding: 8px; border-bottom: 1px solid #000; align-items: center; }
                 .grandora-remarks .label { width: 96px; font-size: 13px; font-weight: 700; }
                 .grandora-remarks .text { flex: 1; text-align: center; white-space: pre-line; }
@@ -227,9 +224,11 @@
                             <span class="label">In words</span><span>:</span>
                             <span><span t-esc="o.currency_id.name"/> &amp;nbsp;&amp;nbsp;&amp;nbsp; *** <span t-esc="o.amount_total_words or o.currency_id.amount_to_text(o.amount_total)"/></span>
                         </div>
-                        <div class="grandora-words-currency" t-esc="o.currency_id.name"/>
-                        <div class="grandora-words-total-label">Total</div>
-                        <div class="grandora-words-total-amount" t-esc="'{:,.2f}'.format(o.amount_total)"/>
+                        <div class="grandora-words-total">
+                            <span t-esc="o.currency_id.name"/>
+                            <span>Total</span>
+                            <span t-esc="'{:,.2f}'.format(o.amount_total)"/>
+                        </div>
                     </div>
                     <div class="grandora-flex grandora-remarks grandora-pink">
                         <div class="label">Remarks</div>
