@@ -57,17 +57,21 @@
                 .grandora-mb2 { margin-bottom: 8px; }
                 .grandora-lines-wrap { border: 1px solid #000; border-bottom: 0; flex: 1 1 auto; min-height: 0; display: flex; }
                 .grandora-lines { width: 100%; height: 100%; border-collapse: collapse; table-layout: fixed; font-size: 11px; }
-                .grandora-lines th, .grandora-lines td { border-left: 1px solid #000; border-right: 1px solid #000; padding: 5px 8px; vertical-align: top; }
+                .grandora-lines th, .grandora-lines td { border-left: 1px solid #000; border-right: 1px solid #000; padding: 5px 6px; vertical-align: top; }
                 .grandora-lines th { border-bottom: 1px solid #000; text-align: center; font-weight: 400; }
-                .grandora-lines th:first-child, .grandora-lines td:first-child { border-left: 0; }
+                .grandora-lines th:first-child, .grandora-lines td:first-child { border-left: 0; padding-left: 2px; padding-right: 2px; }
                 .grandora-lines th:last-child, .grandora-lines td:last-child { border-right: 0; }
+                .grandora-lines .grandora-sl-head { line-height: 1.05; white-space: normal; }
                 .grandora-fill-row { height: 100%; }
                 .grandora-fill-row td { height: 100%; padding: 0 8px; }
                 .grandora-footer { border: 1px solid #000; }
-                .grandora-words { padding: 8px; align-items: center; border-bottom: 1px solid #000; }
-                .grandora-words-left { width: 75%; gap: 8px; }
+                .grandora-words { display: grid; grid-template-columns: 5% 10% 47% 8% 10% 10% 10%; align-items: center; border-bottom: 1px solid #000; }
+                .grandora-words > div { padding: 8px 6px; min-height: 31px; }
+                .grandora-words-left { grid-column: 1 / span 4; display: flex; gap: 8px; border-right: 1px solid #000; }
                 .grandora-words-left .label { width: 64px; }
-                .grandora-total { width: 25%; justify-content: space-between; padding-right: 8px; }
+                .grandora-words-currency { grid-column: 5; text-align: center; border-right: 1px solid #000; }
+                .grandora-words-total-label { grid-column: 6; text-align: center; border-right: 1px solid #000; }
+                .grandora-words-total-amount { grid-column: 7; text-align: right; }
                 .grandora-remarks { padding: 8px; border-bottom: 1px solid #000; align-items: center; }
                 .grandora-remarks .label { width: 96px; font-size: 13px; font-weight: 700; }
                 .grandora-remarks .text { flex: 1; text-align: center; white-space: pre-line; }
@@ -177,15 +181,24 @@
 
                 <div class="grandora-lines-wrap">
                     <table class="grandora-lines">
+                        <colgroup>
+                            <col style="width:5%;"/>
+                            <col style="width:10%;"/>
+                            <col style="width:47%;"/>
+                            <col style="width:8%;"/>
+                            <col style="width:10%;"/>
+                            <col style="width:10%;"/>
+                            <col style="width:10%;"/>
+                        </colgroup>
                         <thead>
                             <tr class="grandora-pink">
-                                <th style="width:4%;">SL.<br/>No.</th>
-                                <th style="width:10%;">CODE</th>
-                                <th style="width:48%;">DESCRIPTION</th>
-                                <th style="width:8%;">UOM</th>
-                                <th style="width:10%;">QUANTITY</th>
-                                <th style="width:10%;">PRICE</th>
-                                <th style="width:10%;">AMOUNT</th>
+                                <th class="grandora-sl-head">SL.<br/>No.</th>
+                                <th>CODE</th>
+                                <th>DESCRIPTION</th>
+                                <th>UOM</th>
+                                <th>QUANTITY</th>
+                                <th>PRICE</th>
+                                <th>AMOUNT</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -209,16 +222,14 @@
                 </div>
 
                 <div class="grandora-footer">
-                    <div class="grandora-flex grandora-words">
-                        <div class="grandora-flex grandora-words-left">
+                    <div class="grandora-words">
+                        <div class="grandora-words-left">
                             <span class="label">In words</span><span>:</span>
                             <span><span t-esc="o.currency_id.name"/> &amp;nbsp;&amp;nbsp;&amp;nbsp; *** <span t-esc="o.amount_total_words or o.currency_id.amount_to_text(o.amount_total)"/></span>
                         </div>
-                        <div class="grandora-flex grandora-total">
-                            <span t-esc="o.currency_id.name"/>
-                            <span>Total</span>
-                            <span class="grandora-right" t-esc="'{:,.2f}'.format(o.amount_total)"/>
-                        </div>
+                        <div class="grandora-words-currency" t-esc="o.currency_id.name"/>
+                        <div class="grandora-words-total-label">Total</div>
+                        <div class="grandora-words-total-amount" t-esc="'{:,.2f}'.format(o.amount_total)"/>
                     </div>
                     <div class="grandora-flex grandora-remarks grandora-pink">
                         <div class="label">Remarks</div>
