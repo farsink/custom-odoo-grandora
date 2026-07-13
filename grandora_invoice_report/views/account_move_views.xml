@@ -9,6 +9,7 @@
                 <field name="sale_order_number" invisible="move_type not in ('out_invoice', 'out_refund', 'out_receipt')" readonly="state != 'draft'"/>
                 <field name="division_name" invisible="move_type not in ('out_invoice', 'out_refund', 'out_receipt')" readonly="state != 'draft'"/>
                 <field name="delivery_time" invisible="move_type not in ('out_invoice', 'out_refund', 'out_receipt')" readonly="state != 'draft'"/>
+                <field name="grandora_remarks" invisible="move_type not in ('out_invoice', 'out_refund', 'out_receipt')" placeholder="Remarks printed on the Grandora invoice"/>
             </xpath>
         </field>
     </record>

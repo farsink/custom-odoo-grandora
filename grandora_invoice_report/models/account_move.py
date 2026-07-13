@@ -8,6 +8,7 @@ class AccountMove(models.Model):
     division_name = fields.Char(string="Division Name", copy=False)
     delivery_time = fields.Char(string="Delivery Time", copy=False)
     sale_order_number = fields.Char(string="SO Number", copy=False)
+    grandora_remarks = fields.Text(string="Grandora Invoice Remarks", copy=False)
 
     def _grandora_printed_at(self):
         self.ensure_one()

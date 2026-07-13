@@ -10,13 +10,21 @@
                 .grandora-invoice-page {
                     width: 210mm;
                     min-height: 297mm;
+                    height: 297mm;
                     padding: 20px 24px;
                     background: #fff;
                     color: #000;
                     font-family: "Times New Roman", Times, serif;
                     font-size: 12px;
                     line-height: 1.25;
+                    display: flex;
+                    flex-direction: column;
                 }
+                .grandora-invoice-page header,
+                .grandora-invoice-page .grandora-divider,
+                .grandora-invoice-page .grandora-title-row,
+                .grandora-invoice-page .grandora-details,
+                .grandora-invoice-page .grandora-footer { flex: 0 0 auto; }
                 .grandora-flex { display: flex; }
                 .grandora-grid { display: grid; }
                 .grandora-between { justify-content: space-between; }
@@ -47,21 +55,22 @@
                 .grandora-mt { margin-top: 4px; }
                 .grandora-mb { margin-bottom: 4px; }
                 .grandora-mb2 { margin-bottom: 8px; }
-                .grandora-lines-wrap { border: 1px solid #000; min-height: 108mm; }
-                .grandora-lines { width: 100%; border-collapse: collapse; font-size: 11px; }
+                .grandora-lines-wrap { border: 1px solid #000; border-bottom: 0; flex: 1 1 auto; min-height: 0; display: flex; }
+                .grandora-lines { width: 100%; height: 100%; border-collapse: collapse; table-layout: fixed; font-size: 11px; }
                 .grandora-lines th, .grandora-lines td { border-left: 1px solid #000; border-right: 1px solid #000; padding: 5px 8px; vertical-align: top; }
                 .grandora-lines th { border-bottom: 1px solid #000; text-align: center; font-weight: 400; }
                 .grandora-lines th:first-child, .grandora-lines td:first-child { border-left: 0; }
                 .grandora-lines th:last-child, .grandora-lines td:last-child { border-right: 0; }
-                .grandora-empty-row td { height: 24px; }
-                .grandora-footer { border: 1px solid #000; border-top: 0; }
+                .grandora-fill-row { height: 100%; }
+                .grandora-fill-row td { height: 100%; padding: 0 8px; }
+                .grandora-footer { border: 1px solid #000; }
                 .grandora-words { padding: 8px; align-items: center; border-bottom: 1px solid #000; }
                 .grandora-words-left { width: 75%; gap: 8px; }
                 .grandora-words-left .label { width: 64px; }
                 .grandora-total { width: 25%; justify-content: space-between; padding-right: 8px; }
                 .grandora-remarks { padding: 8px; border-bottom: 1px solid #000; align-items: center; }
                 .grandora-remarks .label { width: 96px; font-size: 13px; font-weight: 700; }
-                .grandora-remarks .text { flex: 1; text-align: center; }
+                .grandora-remarks .text { flex: 1; text-align: center; white-space: pre-line; }
                 .grandora-bottom { grid-template-columns: 1.5fr 1.5fr 1fr; min-height: 140px; }
                 .grandora-bottom-panel { padding: 8px; border-right: 1px solid #000; }
                 .grandora-bottom-panel:last-child { border-right: 0; }
@@ -194,11 +203,7 @@
                             <t t-if="not report_lines">
                                 <tr><td colspan="7" class="grandora-center">No invoice lines</td></tr>
                             </t>
-                            <tr class="grandora-empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr class="grandora-empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr class="grandora-empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr class="grandora-empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                            <tr class="grandora-empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr class="grandora-fill-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -217,7 +222,9 @@
                     </div>
                     <div class="grandora-flex grandora-remarks grandora-pink">
                         <div class="label">Remarks</div>
-                        <div class="text">All Payments should be made through Commercial Bank of Qatar , A/C# 4570-760664-001</div>
+                        <div class="text">
+                            <span t-esc="o.grandora_remarks or 'All Payments should be made through Commercial Bank of Qatar , A/C# 4570-760664-001'"/>
+                        </div>
                         <div class="label grandora-right" dir="rtl">ملاحظات</div>
                     </div>
                     <!-- Compatibility anchors for Odoo's invoice layout preview inheritance. -->
