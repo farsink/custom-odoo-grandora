@@ -220,6 +220,11 @@
                         <div class="text">All Payments should be made through Commercial Bank of Qatar , A/C# 4570-760664-001</div>
                         <div class="label grandora-right" dir="rtl">ملاحظات</div>
                     </div>
+                    <!-- Compatibility anchors for Odoo's invoice layout preview inheritance. -->
+                    <div style="display: none;">
+                        <div id="qrcode"></div>
+                        <p name="payment_communication"><t t-if="o.partner_bank_id"></t></p>
+                    </div>
                     <div class="grandora-grid grandora-bottom">
                         <div class="grandora-bottom-panel grandora-terms">
                             <h3 class="grandora-bold">TERMS &amp; CONDITIONS</h3>
