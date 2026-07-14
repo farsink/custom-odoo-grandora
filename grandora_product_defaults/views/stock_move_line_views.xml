@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="stock_move_line_operation_tree_grandora_batches" model="ir.ui.view">
+        <field name="name">stock.move.line.operation.list.grandora.batches</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="product_expiry.view_stock_move_line_operation_tree_expiry"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lot_name']" position="attributes">
+                <attribute name="string">Internal Batch ID</attribute>
+                <attribute name="readonly">1</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='lot_name']" position="after">
+                <field name="supplier_lot_name"
+                       string="Supplier Lot/Batch"
+                       required="picking_code == 'incoming' and tracking == 'lot' and quantity &gt; 0"
+                       readonly="state in ('done', 'cancel')"/>
+            </xpath>
+            <xpath expr="//field[@name='expiration_date']" position="after">
+                <field name="best_before_date"
+                       required="picking_code == 'incoming' and tracking == 'lot' and quantity &gt; 0"
+                       readonly="state in ('done', 'cancel')"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stock_move_line_detailed_operation_tree_grandora_batches" model="ir.ui.view">
+        <field name="name">stock.move.line.detailed.operation.list.grandora.batches</field>
+        <field name="model">stock.move.line</field>
+        <field name="inherit_id" ref="product_expiry.view_stock_move_line_detailed_operation_tree_expiry"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lot_name']" position="attributes">
+                <attribute name="string">Internal Batch ID</attribute>
+                <attribute name="readonly">1</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='lot_name']" position="after">
+                <field name="supplier_lot_name"
+                       string="Supplier Lot/Batch"
+                       required="picking_code == 'incoming' and tracking == 'lot' and quantity &gt; 0"
+                       readonly="state in ('done', 'cancel')"/>
+            </xpath>
+            <xpath expr="//field[@name='expiration_date']" position="after">
+                <field name="best_before_date"
+                       required="picking_code == 'incoming' and tracking == 'lot' and quantity &gt; 0"
+                       readonly="state in ('done', 'cancel')"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

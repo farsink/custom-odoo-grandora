@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_category_form_grandora_defaults" model="ir.ui.view">
+        <field name="name">product.category.form.grandora.defaults</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='parent_id']" position="after">
+                <field name="grandora_sku_prefix" placeholder="e.g. BUT"/>
+                <field name="grandora_product_sequence_id" readonly="1" groups="base.group_system"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
