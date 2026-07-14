@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_sale_lot_margin" model="ir.ui.view">
+        <field name="name">sale.order.form.sale.lot.margin</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']/form//div[@name='ordered_qty']" position="after">
+                <field name="available_lot_ids" invisible="1"/>
+                <field name="lot_id"
+                       string="Lot / Batch"
+                       domain="[('id', 'in', available_lot_ids)]"
+                       options="{'no_create': True, 'no_open': True}"
+                       required="not display_type and not is_downpayment and product_type == 'consu'"
+                       readonly="state not in ['draft', 'sent']"/>
+                <field name="batch_cost" readonly="1"/>
+                <field name="unit_margin_percent" widget="percentage" readonly="1"/>
+                <field name="actual_lot_id" readonly="1" invisible="not actual_lot_id"/>
+                <field name="actual_batch_cost" readonly="1" invisible="not actual_batch_cost"/>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/form//field[@name='price_unit']" position="attributes">
+                <attribute name="string">Selling Price</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/list//field[@name='product_template_id']" position="after">
+                <field name="available_lot_ids" column_invisible="True"/>
+                <field name="lot_id"
+                       string="Lot / Batch"
+                       domain="[('id', 'in', available_lot_ids)]"
+                       options="{'no_create': True, 'no_open': True}"
+                       required="not display_type and not is_downpayment and product_type == 'consu'"
+                       readonly="state not in ['draft', 'sent']"
+                       optional="show"/>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/list//field[@name='price_unit']" position="attributes">
+                <attribute name="string">Selling Price</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/list//field[@name='price_unit']" position="after">
+                <field name="batch_cost" readonly="1" optional="show"/>
+                <field name="unit_margin_percent" string="Unit Margin %" widget="percentage" readonly="1" optional="show"/>
+                <field name="actual_lot_id" readonly="1" optional="hide"/>
+                <field name="actual_batch_cost" readonly="1" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_order_form_hide_standard_sale_margin" model="ir.ui.view">
+        <field name="name">sale.order.form.hide.standard.sale.margin</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="priority" eval="99"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tax_totals']/following-sibling::div[.//field[@name='margin']]" position="replace"/>
+
+            <xpath expr="//field[@name='order_line']/form//field[@name='purchase_price']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/list//field[@name='purchase_price']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+                <attribute name="optional">hide</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list//field[@name='margin']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+                <attribute name="optional">hide</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list//field[@name='margin_percent']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+                <attribute name="optional">hide</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
