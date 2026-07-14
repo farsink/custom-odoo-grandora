@@ -34,6 +34,7 @@
                 .grandora-maroon { color: #8a151b; }
                 .grandora-gold { color: #b0966a; }
                 .grandora-pink { background: #f3e6ea; }
+                .grandora-table-head { background: #E4EAE2; }
                 .grandora-header { align-items: flex-start; margin-bottom: 8px; }
                 .grandora-logo-block { width: 33.33%; padding-top: 8px; text-align: center; }
                 .grandora-logo { width: 100%; max-height: 82px; object-fit: contain; }
@@ -49,6 +50,16 @@
                 .grandora-details { grid-template-columns: 1.2fr 1.2fr 1fr; margin-bottom: 8px; }
                 .grandora-panel { min-height: 140px; padding: 8px 16px 8px 8px; border-right: 1px solid #000; display: flex; flex-direction: column; justify-content: space-between; }
                 .grandora-panel:last-child { border-right: 0; padding: 4px 8px 8px; display: block; }
+                .grandora-meta { margin-bottom: 8px; }
+                .grandora-meta-title { padding: 6px 8px; border-bottom: 1px solid #000; text-align: center; font-size: 16px; letter-spacing: .02em; }
+                .grandora-meta-row { display: grid; grid-template-columns: 1.2fr 1fr; border-bottom: 1px solid #000; }
+                .grandora-meta-row:last-child { border-bottom: 0; }
+                .grandora-meta-cell { min-height: 86px; padding: 7px 10px; }
+                .grandora-meta-cell:first-child { border-right: 1px solid #000; }
+                .grandora-meta-heading { font-weight: 700; margin-bottom: 5px; }
+                .grandora-meta-address { min-height: 40px; }
+                .grandora-meta-contact { margin-top: 4px; }
+                .grandora-meta-kv { display: grid; grid-template-columns: 112px 10px 1fr; row-gap: 4px; align-items: start; }
                 .grandora-kv { display: grid; grid-template-columns: 80px 10px 1fr; row-gap: 2px; align-items: start; }
                 .grandora-kv-small { display: grid; grid-template-columns: 50px 10px 1fr; row-gap: 2px; }
                 .grandora-kv-right { display: grid; grid-template-columns: 90px 10px 1fr; row-gap: 2px; align-items: start; }
@@ -107,71 +118,52 @@
 
                 <div class="grandora-divider"></div>
 
-                <div class="grandora-flex grandora-between grandora-title-row">
-                    <div></div>
-                    <h2 class="grandora-title">SALES INVOICE</h2>
-                    <div class="grandora-right" style="font-size:13px;">Division Name &amp;nbsp;: &amp;nbsp;<span t-esc="o.division_name or 'RESTAURANT'"/></div>
-                </div>
-
-                <div class="grandora-box grandora-grid grandora-details">
-                    <div class="grandora-panel">
-                        <div>
-                            <div class="grandora-mb"><u>INVOICE TO :</u></div>
-                            <div class="grandora-kv grandora-mb">
-                                <div>Customer ID</div><div>:</div><div t-esc="o.partner_id.ref or '-'"/>
-                            </div>
-                            <div class="grandora-mb2">
-                                <span t-esc="o.partner_id.name or ''"/><br/>
+                <div class="grandora-box grandora-meta">
+                    <div class="grandora-meta-title grandora-bold">
+                        SALES INVOICE - Division Name: <span t-esc="o.division_name or 'RESTAURANT'"/>
+                    </div>
+                    <div class="grandora-meta-row">
+                        <div class="grandora-meta-cell">
+                            <div class="grandora-meta-heading">INVOICE TO:</div>
+                            <div class="grandora-meta-address">
+                                <span t-esc="o.partner_id.name or ''"/>
+                                <span t-if="o.partner_id.ref"> (Customer ID: <span t-esc="o.partner_id.ref"/>)</span><br/>
+                                <span t-if="not o.partner_id.ref"><br/></span>
                                 <span t-if="o.partner_id.street" t-esc="o.partner_id.street"/><br t-if="o.partner_id.street"/>
                                 <span t-if="o.partner_id.street2" t-esc="o.partner_id.street2"/><br t-if="o.partner_id.street2"/>
-                                <span t-if="o.partner_id.city" t-esc="o.partner_id.city"/><br t-if="o.partner_id.city"/>
-                                <span t-esc="o.partner_id.country_id.name or ''"/>
+                                <span t-if="o.partner_id.city" t-esc="o.partner_id.city"/><span t-if="o.partner_id.city and o.partner_id.country_id">, </span><span t-esc="o.partner_id.country_id.name or ''"/>
                             </div>
+                            <div class="grandora-meta-contact">Tel no: <span t-esc="o.partner_id.phone or o.partner_id.mobile or '-'"/></div>
                         </div>
-                        <div class="grandora-kv-small">
-                            <div>Tel no</div><div></div><div t-esc="o.partner_id.phone or o.partner_id.mobile or '-'"/>
-                            <div>Fax no</div><div></div><div>-</div>
+                        <div class="grandora-meta-cell">
+                            <div class="grandora-meta-kv">
+                                <div>INVOICE NO</div><div>:</div><div t-esc="o.name if o.name and o.name != '/' else 'Draft'"/>
+                                <div>DATE</div><div>:</div><div t-esc="o.invoice_date and o.invoice_date.strftime('%d/%m/%Y') or ''"/>
+                                <div>CURRENCY</div><div>:</div><div t-esc="o.currency_id.name or ''"/>
+                                <div>P.O. NUMBER</div><div>:</div><div t-esc="o.ref or '-'"/>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="grandora-panel">
-                        <div>
-                            <div class="grandora-mb grandora-kv">
-                                <div><u>DELIVERY TO</u></div><div><u>:</u></div><div><u t-esc="delivery_partner.ref or o.partner_id.ref or '-'"/></div>
-                            </div>
-                            <div class="grandora-kv grandora-mb">
-                                <div>Area</div><div>:</div><div t-esc="delivery_partner.street2 or delivery_partner.city or '-'"/>
-                            </div>
-                            <div class="grandora-mb2">
-                                <span t-esc="delivery_partner.name or o.partner_id.name or ''"/><br/>
+                    <div class="grandora-meta-row">
+                        <div class="grandora-meta-cell">
+                            <div class="grandora-meta-heading">DELIVERY TO:</div>
+                            <div class="grandora-meta-address">
+                                <span t-esc="delivery_partner.name or o.partner_id.name or ''"/>
+                                <span t-if="delivery_partner.street2 or delivery_partner.city"> (Area: <span t-esc="delivery_partner.street2 or delivery_partner.city"/>)</span><br/>
+                                <span t-if="not (delivery_partner.street2 or delivery_partner.city)"><br/></span>
                                 <span t-if="delivery_partner.street" t-esc="delivery_partner.street"/><br t-if="delivery_partner.street"/>
                                 <span t-if="delivery_partner.street2" t-esc="delivery_partner.street2"/><br t-if="delivery_partner.street2"/>
-                                <span t-if="delivery_partner.city" t-esc="delivery_partner.city"/><br t-if="delivery_partner.city"/>
-                                <span t-esc="delivery_partner.country_id.name or ''"/>
+                                <span t-if="delivery_partner.city" t-esc="delivery_partner.city"/><span t-if="delivery_partner.city and delivery_partner.country_id">, </span><span t-esc="delivery_partner.country_id.name or ''"/>
                             </div>
+                            <div class="grandora-meta-contact">Tel no: <span t-esc="delivery_partner.phone or delivery_partner.mobile or '-'"/></div>
                         </div>
-                        <div>
-                            <div class="grandora-kv-small grandora-mb2">
-                                <div>Tel no</div><div></div><div t-esc="delivery_partner.phone or delivery_partner.mobile or '-'"/>
-                                <div>Fax no</div><div></div><div>-</div>
+                        <div class="grandora-meta-cell">
+                            <div class="grandora-meta-kv">
+                                <div>SALES PERSON</div><div>:</div><div t-esc="o.invoice_user_id.name or o.user_id.name or '-'"/>
+                                <div>TERMS</div><div>:</div><div t-esc="o.invoice_payment_term_id.name or '-'"/>
+                                <div>SO NUMBER</div><div>:</div><div t-esc="o.sale_order_number or o.invoice_origin or '-'"/>
+                                <div>PRINTED</div><div>:</div><div t-esc="o._grandora_printed_at()"/>
                             </div>
-                            <div class="grandora-kv">
-                                <div>Printed</div><div>:</div><div t-esc="o._grandora_printed_at()"/>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grandora-panel">
-                        <div class="grandora-kv-right">
-                            <div><u>INVOICE #</u></div><div>:</div><div t-esc="o.name if o.name and o.name != '/' else 'Draft'"/>
-                            <div class="grandora-mt">Date</div><div class="grandora-mt">:</div><div class="grandora-mt" t-esc="o.invoice_date and o.invoice_date.strftime('%d/%m/%Y') or ''"/>
-                            <div>Customer PO</div><div>:</div><div t-esc="o.ref or '-'"/>
-                            <div>Sales Person</div><div>:</div><div t-esc="o.invoice_user_id.name or o.user_id.name or '-'"/>
-                            <div class="grandora-mt">Currency</div><div class="grandora-mt">:</div><div class="grandora-mt" t-esc="o.currency_id.name or ''"/>
-                            <div>SO Number</div><div>:</div><div t-esc="o.sale_order_number or o.invoice_origin or '-'"/>
-                            <div>Reference</div><div>:</div><div t-esc="o.invoice_origin or o.payment_reference or '-'"/>
-                            <div class="grandora-mt">Delivery Time</div><div class="grandora-mt">:</div><div class="grandora-mt" t-esc="o.delivery_time or '-'"/>
-                            <div>Payment Terms</div><div>:</div><div t-esc="o.invoice_payment_term_id.name or '-'"/>
                         </div>
                     </div>
                 </div>
@@ -188,7 +180,7 @@
                             <col style="width:10%;"/>
                         </colgroup>
                         <thead>
-                            <tr class="grandora-pink">
+                            <tr class="grandora-table-head">
                                 <th class="grandora-sl-head">SL.<br/>No.</th>
                                 <th>CODE</th>
                                 <th>DESCRIPTION</th>
