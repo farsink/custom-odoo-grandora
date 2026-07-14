@@ -38,7 +38,7 @@
                 .grandora-header { align-items: center; margin-bottom: 8px; padding-top: 4px; }
                 .grandora-brand-block { width: 38%; display: flex; align-items: center; gap: 8px; }
                 .grandora-lettermark { width: 58px; height: 58px; object-fit: contain; flex: 0 0 auto; }
-                .grandora-wordmark { flex: 1 1 auto; text-align: center; line-height: 1.12; }
+                .grandora-wordmark { flex: 1 -2 auto; text-align: center; line-height: 1.12; }
                 .grandora-wordmark-logo { width: 100%; max-height: 44px; object-fit: contain; display: block; }
                 .grandora-wordmark-web { margin-top: 4px; font-size: 12px; font-weight: 700; }
                 .grandora-company { width: 38%; padding: 0 0 0 8px; font-size: 11px; }
