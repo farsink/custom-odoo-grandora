@@ -26,6 +26,15 @@ class StockMoveLine(models.Model):
         store=True,
         readonly=True,
     )
+    grandora_product_defaults_enabled = fields.Boolean(
+        compute="_compute_grandora_product_defaults_enabled",
+        string="Grandora Product Defaults Enabled",
+    )
+
+    def _compute_grandora_product_defaults_enabled(self):
+        enabled = self.env["grandora.product.defaults.toggle"]._grandora_product_defaults_enabled()
+        for line in self:
+            line.grandora_product_defaults_enabled = enabled
 
     def _prepare_new_lot_vals(self):
         vals = super()._prepare_new_lot_vals()

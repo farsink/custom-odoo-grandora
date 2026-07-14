@@ -5,18 +5,21 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='default_code']" position="before">
+                <field name="grandora_product_defaults_enabled" invisible="1"/>
+            </xpath>
             <xpath expr="//field[@name='default_code']" position="attributes">
                 <attribute name="placeholder">Auto-generated if blank</attribute>
-                <attribute name="required">type == 'consu' and is_storable</attribute>
+                <attribute name="required">grandora_product_defaults_enabled and type == 'consu' and is_storable</attribute>
             </xpath>
 
             <xpath expr="//field[@name='barcode']" position="after">
                 <separator string="Product Information" colspan="2"/>
                 <field name="brand_id"
-                       required="type == 'consu' and is_storable"
+                       required="grandora_product_defaults_enabled and type == 'consu' and is_storable"
                        options="{'no_create_edit': False}"/>
                 <field name="item_group_id"
-                       required="type == 'consu' and is_storable"
+                       required="grandora_product_defaults_enabled and type == 'consu' and is_storable"
                        options="{'no_create_edit': False}"/>
                 <field name="expiration_time"
                        string="Default Shelf Life (days)"
@@ -24,7 +27,7 @@
             </xpath>
 
             <xpath expr="//field[@name='categ_id']" position="attributes">
-                <attribute name="required">type == 'consu' and is_storable</attribute>
+                <attribute name="required">grandora_product_defaults_enabled and type == 'consu' and is_storable</attribute>
             </xpath>
         </field>
     </record>

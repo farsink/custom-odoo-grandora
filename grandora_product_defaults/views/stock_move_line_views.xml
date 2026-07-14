@@ -6,6 +6,7 @@
         <field name="inherit_id" ref="product_expiry.view_stock_move_line_operation_tree_expiry"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='product_id']" position="after">
+                <field name="grandora_product_defaults_enabled" column_invisible="True"/>
                 <field name="brand_id" readonly="1" optional="hide"/>
                 <field name="item_group_id" readonly="1" optional="hide"/>
             </xpath>
@@ -17,12 +18,12 @@
             <xpath expr="//field[@name='lot_name']" position="after">
                 <field name="supplier_lot_name"
                        string="Supplier Lot/Batch"
-                       required="picking_code == 'incoming' and tracking == 'lot' and quantity &gt; 0"
+                       required="grandora_product_defaults_enabled and picking_code == 'incoming' and tracking == 'lot' and quantity &gt; 0"
                        readonly="state in ('done', 'cancel')"/>
             </xpath>
             <xpath expr="//field[@name='expiration_date']" position="after">
                 <field name="best_before_date"
-                       required="picking_code == 'incoming' and tracking == 'lot' and quantity &gt; 0"
+                       required="grandora_product_defaults_enabled and picking_code == 'incoming' and tracking == 'lot' and quantity &gt; 0"
                        readonly="state in ('done', 'cancel')"/>
             </xpath>
         </field>
@@ -34,6 +35,7 @@
         <field name="inherit_id" ref="product_expiry.view_stock_move_line_detailed_operation_tree_expiry"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='product_id']" position="after">
+                <field name="grandora_product_defaults_enabled" column_invisible="True"/>
                 <field name="brand_id" readonly="1" optional="hide"/>
                 <field name="item_group_id" readonly="1" optional="hide"/>
             </xpath>
@@ -45,12 +47,12 @@
             <xpath expr="//field[@name='lot_name']" position="after">
                 <field name="supplier_lot_name"
                        string="Supplier Lot/Batch"
-                       required="picking_code == 'incoming' and tracking == 'lot' and quantity &gt; 0"
+                       required="grandora_product_defaults_enabled and picking_code == 'incoming' and tracking == 'lot' and quantity &gt; 0"
                        readonly="state in ('done', 'cancel')"/>
             </xpath>
             <xpath expr="//field[@name='expiration_date']" position="after">
                 <field name="best_before_date"
-                       required="picking_code == 'incoming' and tracking == 'lot' and quantity &gt; 0"
+                       required="grandora_product_defaults_enabled and picking_code == 'incoming' and tracking == 'lot' and quantity &gt; 0"
                        readonly="state in ('done', 'cancel')"/>
             </xpath>
         </field>

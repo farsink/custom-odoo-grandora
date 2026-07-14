@@ -17,6 +17,19 @@ class ProductTemplate(models.Model):
         ondelete="restrict",
         help="Operational product group such as Frozen, Dairy, or Bakery. This is not a variant attribute.",
     )
+    grandora_product_defaults_enabled = fields.Boolean(
+        compute="_compute_grandora_product_defaults_enabled",
+        string="Grandora Product Defaults Enabled",
+    )
+
+    @api.model
+    def _grandora_product_defaults_enabled(self):
+        return self.env["grandora.product.defaults.toggle"]._grandora_product_defaults_enabled()
+
+    def _compute_grandora_product_defaults_enabled(self):
+        enabled = self._grandora_product_defaults_enabled()
+        for template in self:
+            template.grandora_product_defaults_enabled = enabled
 
     @api.model
     def _grandora_default_category(self):
@@ -25,6 +38,8 @@ class ProductTemplate(models.Model):
     @api.model
     def default_get(self, fields_list):
         values = super().default_get(fields_list)
+        if not self._grandora_product_defaults_enabled():
+            return values
         if "type" in fields_list:
             values.setdefault("type", "consu")
         if "is_storable" in fields_list:
@@ -43,6 +58,8 @@ class ProductTemplate(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        if not self._grandora_product_defaults_enabled():
+            return super().create(vals_list)
         default_category = self._grandora_default_category()
         for vals in vals_list:
             product_type = vals.setdefault("type", "consu")
@@ -73,6 +90,8 @@ class ProductTemplate(models.Model):
         return templates
 
     def write(self, vals):
+        if not self._grandora_product_defaults_enabled():
+            return super().write(vals)
         if vals.get("item_group_id") and not vals.get("categ_id"):
             item_group = self.env["product.item.group"].browse(vals["item_group_id"])
             templates_using_default = self.filtered(lambda template: not template.categ_id or template.categ_id == template._grandora_default_category())
@@ -91,7 +110,7 @@ class ProductTemplate(models.Model):
     @api.constrains("type", "is_storable", "brand_id", "item_group_id", "categ_id")
     def _check_grandora_required_product_information(self):
         for template in self:
-            if not template._grandora_requires_product_information():
+            if not template._grandora_product_defaults_enabled() or not template._grandora_requires_product_information():
                 continue
             missing = []
             if not template.brand_id:

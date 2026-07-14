@@ -5,6 +5,9 @@ from odoo.exceptions import UserError
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
+    def _grandora_product_defaults_enabled(self):
+        return self.env["grandora.product.defaults.toggle"]._grandora_product_defaults_enabled()
+
     def _grandora_is_incoming_receipt(self):
         self.ensure_one()
         return self.picking_type_id.code == "incoming"
@@ -12,7 +15,8 @@ class StockPicking(models.Model):
     def _grandora_requires_auto_batch(self, move_line):
         product = move_line.product_id
         return bool(
-            self._grandora_is_incoming_receipt()
+            self._grandora_product_defaults_enabled()
+            and self._grandora_is_incoming_receipt()
             and product
             and product.type == "consu"
             and product.is_storable
@@ -50,6 +54,8 @@ class StockPicking(models.Model):
                 return name
 
     def _grandora_prepare_incoming_batches(self):
+        if not self.env["grandora.product.defaults.toggle"]._grandora_product_defaults_enabled():
+            return
         for picking in self:
             if not picking._grandora_is_incoming_receipt():
                 continue
