@@ -202,7 +202,7 @@
                                 <tr>
                                     <td class="grandora-center" t-esc="line_index + 1"/>
                                     <td class="grandora-center" t-esc="line.product_id.default_code or '-'"/>
-                                    <td><span t-esc="line.name or line.product_id.display_name or ''"/></td>
+                                    <td><span t-esc="o._grandora_line_description(line)"/></td>
                                     <td class="grandora-center" t-esc="line.product_uom_id.name or ''"/>
                                     <td class="grandora-right" t-esc="'%.3f' % line.quantity"/>
                                     <td class="grandora-right" t-esc="'%.2f' % line.price_unit"/>
