@@ -35,13 +35,17 @@
                 .grandora-gold { color: #b0966a; }
                 .grandora-pink { background: #f3e6ea; }
                 .grandora-table-head { background: #E4EAE2; }
-                .grandora-header { align-items: flex-start; margin-bottom: 8px; }
-                .grandora-logo-block { width: 33.33%; padding-top: 8px; text-align: center; }
-                .grandora-logo { width: 100%; max-height: 82px; object-fit: contain; }
-                .grandora-company { width: 50%; padding: 8px 0 0 20px; font-size: 11px; }
-                .grandora-ar { width: 33.33%; padding-top: 8px; text-align: right; }
-                .grandora-ar-title { font-size: 44px; line-height: .9; font-weight: 700; }
-                .grandora-ar-subtitle { font-size: 17px; font-weight: 700; color: #b0966a; }
+                .grandora-header { align-items: center; margin-bottom: 8px; padding-top: 4px; }
+                .grandora-brand-block { width: 38%; display: flex; align-items: center; gap: 8px; }
+                .grandora-lettermark { width: 58px; height: 58px; object-fit: contain; flex: 0 0 auto; }
+                .grandora-wordmark { flex: 1 1 auto; text-align: center; line-height: 1.12; }
+                .grandora-wordmark-main { font-size: 18px; letter-spacing: .08em; font-weight: 700; }
+                .grandora-wordmark-sub { font-size: 11px; letter-spacing: .10em; font-weight: 700; }
+                .grandora-wordmark-web { margin-top: 7px; font-size: 12px; font-weight: 700; }
+                .grandora-company { width: 38%; padding: 0 0 0 8px; font-size: 11px; }
+                .grandora-ar { width: 24%; padding-top: 2px; text-align: right; }
+                .grandora-ar-title { font-size: 34px; line-height: .95; font-weight: 700; }
+                .grandora-ar-subtitle { font-size: 16px; font-weight: 700; color: #b0966a; }
                 .grandora-divider { height: 3px; background: #8a151b; margin-bottom: 4px; }
                 .grandora-title-row { align-items: flex-end; margin-bottom: 4px; }
                 .grandora-title-row &gt; div { width: 33.33%; }
@@ -99,13 +103,17 @@
             </style>
             <div class="article grandora-invoice-page" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id" t-att-data-oe-lang="o.env.context.get('lang')">
                 <header class="grandora-flex grandora-between grandora-header">
-                    <div class="grandora-logo-block">
-                        <img src="/grandora_invoice_report/static/src/img/grandora_logo.png" alt="Grandora Gourmet Trading" class="grandora-logo"/>
-                        <div class="grandora-maroon grandora-bold" style="font-size:14px;">www.grandoragourmet.com</div>
+                    <div class="grandora-brand-block grandora-maroon">
+                        <img src="/grandora_invoice_report/static/src/img/grandora_letter_mark.png" alt="Grandora lettermark" class="grandora-lettermark"/>
+                        <div class="grandora-wordmark">
+                            <div class="grandora-wordmark-main">GRANDORA</div>
+                            <div class="grandora-wordmark-sub">-GOURMET TRADING-</div>
+                            <div class="grandora-wordmark-web">www.grandoragourmet.com</div>
+                        </div>
                     </div>
                     <div class="grandora-company grandora-maroon">
                         <div class="grandora-bold" style="font-size:13.5px; margin-bottom:4px;">Grandora Gourmet Trading W.L.L</div>
-                        <div>Tel. No : <span t-esc="o.company_id.phone or '77848974'"/></div>
+                        <div>Tel : <span t-esc="o.company_id.phone or '77848974'"/></div>
                         <div>P.O. Box : <span t-esc="o.company_id.zip or '30264'"/></div>
                         <div><span t-esc="o.company_id.city or 'Doha'"/> - <span t-esc="o.company_id.country_id.name or 'Qatar'"/></div>
                         <div>Email : <span t-esc="o.company_id.email or 'info@grandoragourmet.com'"/></div>
