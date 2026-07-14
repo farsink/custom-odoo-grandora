@@ -7,6 +7,52 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='default_code']" position="attributes">
                 <attribute name="placeholder">Auto-generated if blank</attribute>
+                <attribute name="required">type == 'consu' and is_storable</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='barcode']" position="after">
+                <separator string="Product Information" colspan="2"/>
+                <field name="brand_id"
+                       required="type == 'consu' and is_storable"
+                       options="{'no_create_edit': False}"/>
+                <field name="item_group_id"
+                       required="type == 'consu' and is_storable"
+                       options="{'no_create_edit': False}"/>
+                <field name="expiration_time"
+                       string="Default Shelf Life (days)"
+                       invisible="type != 'consu' or not is_storable"/>
+            </xpath>
+
+            <xpath expr="//field[@name='categ_id']" position="attributes">
+                <attribute name="required">type == 'consu' and is_storable</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_template_tree_grandora_defaults" model="ir.ui.view">
+        <field name="name">product.template.list.grandora.defaults</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='default_code']" position="after">
+                <field name="brand_id" optional="show"/>
+                <field name="item_group_id" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_template_search_grandora_defaults" model="ir.ui.view">
+        <field name="name">product.template.search.grandora.defaults</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_id']" position="after">
+                <field name="brand_id"/>
+                <field name="item_group_id"/>
+            </xpath>
+            <xpath expr="//group/filter[@name='categ_id']" position="after">
+                <filter string="Brand" name="group_by_brand_id" context="{'group_by':'brand_id'}"/>
+                <filter string="Item Group" name="group_by_item_group_id" context="{'group_by':'item_group_id'}"/>
             </xpath>
         </field>
     </record>

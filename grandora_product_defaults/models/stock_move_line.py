@@ -14,6 +14,18 @@ class StockMoveLine(models.Model):
         copy=False,
         help="Best-before date copied to the created lot/serial number.",
     )
+    brand_id = fields.Many2one(
+        related="product_id.brand_id",
+        string="Brand",
+        store=True,
+        readonly=True,
+    )
+    item_group_id = fields.Many2one(
+        related="product_id.item_group_id",
+        string="Item Group",
+        store=True,
+        readonly=True,
+    )
 
     def _prepare_new_lot_vals(self):
         vals = super()._prepare_new_lot_vals()

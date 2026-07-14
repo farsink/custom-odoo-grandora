@@ -5,6 +5,10 @@
         <field name="model">stock.move.line</field>
         <field name="inherit_id" ref="product_expiry.view_stock_move_line_operation_tree_expiry"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="brand_id" readonly="1" optional="hide"/>
+                <field name="item_group_id" readonly="1" optional="hide"/>
+            </xpath>
             <xpath expr="//field[@name='lot_name']" position="attributes">
                 <attribute name="string">Internal Batch ID</attribute>
                 <attribute name="readonly">1</attribute>
@@ -29,6 +33,10 @@
         <field name="model">stock.move.line</field>
         <field name="inherit_id" ref="product_expiry.view_stock_move_line_detailed_operation_tree_expiry"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="brand_id" readonly="1" optional="hide"/>
+                <field name="item_group_id" readonly="1" optional="hide"/>
+            </xpath>
             <xpath expr="//field[@name='lot_name']" position="attributes">
                 <attribute name="string">Internal Batch ID</attribute>
                 <attribute name="readonly">1</attribute>

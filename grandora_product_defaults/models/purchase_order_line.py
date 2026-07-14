@@ -1,14 +1,9 @@
 from odoo import fields, models
 
 
-class StockLot(models.Model):
-    _inherit = "stock.lot"
+class PurchaseOrderLine(models.Model):
+    _inherit = "purchase.order.line"
 
-    supplier_lot_name = fields.Char(
-        string="Supplier Lot/Batch",
-        copy=False,
-        help="Supplier-provided batch number. Grandora's internal batch ID remains the Lot/Serial Number.",
-    )
     brand_id = fields.Many2one(
         related="product_id.brand_id",
         string="Brand",

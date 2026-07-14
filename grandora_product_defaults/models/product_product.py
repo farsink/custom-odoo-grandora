@@ -1,8 +1,11 @@
-from odoo import api, models
+from odoo import api, fields, models
 
 
 class ProductProduct(models.Model):
     _inherit = "product.product"
+
+    brand_id = fields.Many2one(related="product_tmpl_id.brand_id", store=True, readonly=True)
+    item_group_id = fields.Many2one(related="product_tmpl_id.item_group_id", store=True, readonly=True)
 
     @api.model_create_multi
     def create(self, vals_list):

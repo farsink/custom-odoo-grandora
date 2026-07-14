@@ -7,6 +7,8 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='ref']" position="after">
                 <field name="supplier_lot_name" readonly="1"/>
+                <field name="brand_id" readonly="1"/>
+                <field name="item_group_id" readonly="1"/>
             </xpath>
         </field>
     </record>
@@ -18,6 +20,24 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='name']" position="after">
                 <field name="supplier_lot_name" optional="show"/>
+                <field name="brand_id" optional="show"/>
+                <field name="item_group_id" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stock_lot_search_grandora_product_info" model="ir.ui.view">
+        <field name="name">stock.lot.search.grandora.product.info</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.search_product_lot_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="brand_id"/>
+                <field name="item_group_id"/>
+            </xpath>
+            <xpath expr="//filter[@name='group_by_product']" position="after">
+                <filter name="group_by_brand_id" string="Brand" domain="[]" context="{'group_by': 'brand_id'}"/>
+                <filter name="group_by_item_group_id" string="Item Group" domain="[]" context="{'group_by': 'item_group_id'}"/>
             </xpath>
         </field>
     </record>
