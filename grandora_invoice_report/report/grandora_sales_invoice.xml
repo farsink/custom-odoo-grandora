@@ -223,7 +223,7 @@
                             <span t-esc="o.currency_id.name"/>
                         </div>
                     </div>
-                    <div class="grandora-flex grandora-remarks grandora-pink">
+                    <div class="grandora-flex grandora-remarks grandora-table-head">
                         <div class="label">Remarks</div>
                         <div class="text">
                             <span t-esc="o.grandora_remarks or ''"/>
