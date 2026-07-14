@@ -127,7 +127,6 @@
                 <div class="grandora-box grandora-meta">
                     <div class="grandora-meta-title grandora-bold">
                         <span>SALES INVOICE</span>
-                        <span>Division Name: <span t-esc="o.division_name or 'RESTAURANT'"/></span>
                     </div>
                     <div class="grandora-meta-row">
                         <div class="grandora-meta-cell">
