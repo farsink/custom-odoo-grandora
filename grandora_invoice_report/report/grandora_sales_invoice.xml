@@ -51,7 +51,7 @@
                 .grandora-panel { min-height: 140px; padding: 8px 16px 8px 8px; border-right: 1px solid #000; display: flex; flex-direction: column; justify-content: space-between; }
                 .grandora-panel:last-child { border-right: 0; padding: 4px 8px 8px; display: block; }
                 .grandora-meta { margin-bottom: 8px; }
-                .grandora-meta-title { padding: 6px 8px; border-bottom: 1px solid #000; text-align: center; font-size: 16px; letter-spacing: .02em; }
+                .grandora-meta-title { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; border-top: 2px solid #000; border-bottom: 2px solid #000; text-align: left; font-size: 16px; letter-spacing: .02em; }
                 .grandora-meta-row { display: grid; grid-template-columns: 1.2fr 1fr; border-bottom: 1px solid #000; }
                 .grandora-meta-row:last-child { border-bottom: 0; }
                 .grandora-meta-cell { min-height: 86px; padding: 7px 10px; }
@@ -120,7 +120,8 @@
 
                 <div class="grandora-box grandora-meta">
                     <div class="grandora-meta-title grandora-bold">
-                        SALES INVOICE - Division Name: <span t-esc="o.division_name or 'RESTAURANT'"/>
+                        <span>SALES INVOICE</span>
+                        <span>Division Name: <span t-esc="o.division_name or 'RESTAURANT'"/></span>
                     </div>
                     <div class="grandora-meta-row">
                         <div class="grandora-meta-cell">
