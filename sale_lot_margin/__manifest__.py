@@ -5,7 +5,7 @@
     "category": "Sales/Sales",
     "author": "Grandora",
     "license": "LGPL-3",
-    "depends": ["sale_management", "sale_stock", "stock_account", "sale_margin"],
+    "depends": ["sale_management", "sale_stock", "stock_account", "sale_margin", "grandora_inventory_product_features"],
     "data": [
         "views/sale_order_views.xml",
     ],
