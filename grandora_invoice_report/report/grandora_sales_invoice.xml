@@ -39,9 +39,8 @@
                 .grandora-brand-block { width: 38%; display: flex; align-items: center; gap: 8px; }
                 .grandora-lettermark { width: 58px; height: 58px; object-fit: contain; flex: 0 0 auto; }
                 .grandora-wordmark { flex: 1 1 auto; text-align: center; line-height: 1.12; }
-                .grandora-wordmark-main { font-size: 18px; letter-spacing: .08em; font-weight: 700; }
-                .grandora-wordmark-sub { font-size: 11px; letter-spacing: .10em; font-weight: 700; }
-                .grandora-wordmark-web { margin-top: 7px; font-size: 12px; font-weight: 700; }
+                .grandora-wordmark-logo { width: 100%; max-height: 44px; object-fit: contain; display: block; }
+                .grandora-wordmark-web { margin-top: 4px; font-size: 12px; font-weight: 700; }
                 .grandora-company { width: 38%; padding: 0 0 0 8px; font-size: 11px; }
                 .grandora-ar { width: 24%; padding-top: 2px; text-align: right; }
                 .grandora-ar-title { font-size: 34px; line-height: .95; font-weight: 700; }
@@ -106,8 +105,7 @@
                     <div class="grandora-brand-block grandora-maroon">
                         <img src="/grandora_invoice_report/static/src/img/grandora_letter_mark.png" alt="Grandora lettermark" class="grandora-lettermark"/>
                         <div class="grandora-wordmark">
-                            <div class="grandora-wordmark-main">GRANDORA</div>
-                            <div class="grandora-wordmark-sub">-GOURMET TRADING-</div>
+                            <img src="/grandora_invoice_report/static/src/img/grandora_logo.png" alt="Grandora Gourmet Trading" class="grandora-wordmark-logo"/>
                             <div class="grandora-wordmark-web">www.grandoragourmet.com</div>
                         </div>
                     </div>
