@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_grandora_onhand_batch_dashboard_list" model="ir.ui.view">
+        <field name="name">grandora.onhand.batch.dashboard.list</field>
+        <field name="model">grandora.onhand.batch.dashboard</field>
+        <field name="arch" type="xml">
+            <list string="On-hand Batch Cost" create="0" edit="0" delete="0" duplicate="0" default_order="product_default_code, batch_number, location_id"
+                  decoration-danger="status == 'expired' or negative_margin"
+                  decoration-warning="status in ('expiring_soon', 'low_stock')"
+                  decoration-muted="status == 'depleted'">
+                <field name="currency_id" column_invisible="True"/>
+                <field name="product_default_code"/>
+                <field name="product_name"/>
+                <field name="brand_id" optional="show"/>
+                <field name="item_group_id" optional="show"/>
+                <field name="categ_id" optional="show"/>
+                <field name="lot_id" optional="show"/>
+                <field name="supplier_batch" optional="show"/>
+                <field name="warehouse_id" optional="show" groups="stock.group_stock_multi_warehouses"/>
+                <field name="location_id" optional="show" groups="stock.group_stock_multi_locations"/>
+                <field name="quantity" sum="Total On-hand"/>
+                <field name="reserved_quantity" sum="Total Reserved" optional="show"/>
+                <field name="available_quantity" sum="Total Available" optional="show"/>
+                <field name="uom_id" groups="uom.group_uom"/>
+                <field name="receipt_date" optional="show"/>
+                <field name="expiry_date" optional="show"/>
+                <field name="days_to_expiry" optional="show"/>
+                <field name="landed_unit_cost" optional="show" groups="stock.group_stock_manager,account.group_account_user"/>
+                <field name="batch_value" sum="Total Batch Value" optional="show" groups="stock.group_stock_manager,account.group_account_user"/>
+                <field name="latest_sale_price" optional="show"/>
+                <field name="unit_margin_percent" widget="percentage" optional="show" groups="stock.group_stock_manager,account.group_account_user"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'available'"
+                       decoration-warning="status in ('expiring_soon', 'low_stock')"
+                       decoration-danger="status == 'expired'"
+                       decoration-muted="status == 'depleted'"/>
+                <field name="company_id" optional="hide" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_grandora_onhand_batch_dashboard_form" model="ir.ui.view">
+        <field name="name">grandora.onhand.batch.dashboard.form</field>
+        <field name="model">grandora.onhand.batch.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="On-hand Batch Cost" create="0" edit="0" delete="0">
+                <sheet>
+                    <group>
+                        <group string="Product">
+                            <field name="product_id"/>
+                            <field name="product_default_code"/>
+                            <field name="product_name"/>
+                            <field name="brand_id"/>
+                            <field name="item_group_id"/>
+                            <field name="categ_id"/>
+                            <field name="uom_id" groups="uom.group_uom"/>
+                        </group>
+                        <group string="Batch &amp; Location">
+                            <field name="lot_id"/>
+                            <field name="supplier_batch"/>
+                            <field name="warehouse_id" groups="stock.group_stock_multi_warehouses"/>
+                            <field name="location_id" groups="stock.group_stock_multi_locations"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Quantities">
+                            <field name="quantity"/>
+                            <field name="reserved_quantity"/>
+                            <field name="available_quantity"/>
+                            <field name="status"/>
+                            <field name="is_low_stock"/>
+                        </group>
+                        <group string="Dates">
+                            <field name="receipt_date"/>
+                            <field name="expiry_date"/>
+                            <field name="days_to_expiry"/>
+                        </group>
+                    </group>
+                    <group string="Cost &amp; Margin" groups="stock.group_stock_manager,account.group_account_user">
+                        <field name="currency_id" invisible="1"/>
+                        <field name="landed_unit_cost"/>
+                        <field name="batch_value"/>
+                        <field name="latest_sale_price"/>
+                        <field name="unit_margin_percent" widget="percentage"/>
+                        <field name="has_batch_cost"/>
+                        <field name="has_sale_price"/>
+                        <field name="negative_margin"/>
+                    </group>
+                    <group string="Sale Price">
+                        <field name="latest_sale_price"/>
+                        <field name="has_sale_price"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_grandora_onhand_batch_dashboard_pivot" model="ir.ui.view">
+        <field name="name">grandora.onhand.batch.dashboard.pivot</field>
+        <field name="model">grandora.onhand.batch.dashboard</field>
+        <field name="arch" type="xml">
+            <pivot string="On-hand Batch Cost">
+                <field name="brand_id" type="row"/>
+                <field name="product_id" type="row"/>
+                <field name="location_id" type="col"/>
+                <field name="quantity" type="measure"/>
+                <field name="reserved_quantity" type="measure"/>
+                <field name="available_quantity" type="measure"/>
+                <field name="batch_value" type="measure" groups="stock.group_stock_manager,account.group_account_user"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_grandora_onhand_batch_dashboard_search" model="ir.ui.view">
+        <field name="name">grandora.onhand.batch.dashboard.search</field>
+        <field name="model">grandora.onhand.batch.dashboard</field>
+        <field name="arch" type="xml">
+            <search string="On-hand Batch Cost">
+                <field name="product_id" filter_domain="['|', '|', ('product_name', 'ilike', self), ('product_default_code', 'ilike', self), ('product_barcode', 'ilike', self)]"/>
+                <field name="lot_id" filter_domain="['|', ('batch_number', 'ilike', self), ('supplier_batch', 'ilike', self)]"/>
+                <field name="brand_id"/>
+                <field name="item_group_id"/>
+                <field name="categ_id"/>
+                <field name="warehouse_id" groups="stock.group_stock_multi_warehouses"/>
+                <field name="location_id" groups="stock.group_stock_multi_locations"/>
+                <field name="expiry_date"/>
+                <separator/>
+                <filter string="On Hand" name="on_hand" domain="[('quantity', '&gt;', 0)]"/>
+                <filter string="In Stock" name="in_stock" domain="[('available_quantity', '&gt;', 0)]"/>
+                <filter string="Reserved" name="reserved" domain="[('reserved_quantity', '&gt;', 0)]"/>
+                <filter string="Show History / Depleted" name="show_history" domain="[('quantity', '&lt;=', 0)]"/>
+                <separator/>
+                <filter string="Expiring in 30 Days" name="expiring_30" domain="[('expiry_date', '&gt;=', context_today().strftime('%Y-%m-%d')), ('expiry_date', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Expiring in 60 Days" name="expiring_60" domain="[('expiry_date', '&gt;=', context_today().strftime('%Y-%m-%d')), ('expiry_date', '&lt;=', (context_today() + relativedelta(days=60)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Expiring in 90 Days" name="expiring_90" domain="[('expiry_date', '&gt;=', context_today().strftime('%Y-%m-%d')), ('expiry_date', '&lt;=', (context_today() + relativedelta(days=90)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Expired" name="expired" domain="[('status', '=', 'expired')]"/>
+                <filter string="Low Stock" name="low_stock" domain="[('is_low_stock', '=', True)]"/>
+                <separator/>
+                <filter string="Negative Margin" name="negative_margin" domain="[('negative_margin', '=', True)]" groups="stock.group_stock_manager,account.group_account_user"/>
+                <filter string="No Previous Selling Price" name="no_sale_price" domain="[('has_sale_price', '=', False)]"/>
+                <filter string="Newly Received Batches" name="newly_received" domain="[('receipt_date', '&gt;=', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <filter string="No Batch Cost / Incomplete Landed Cost" name="no_batch_cost" domain="[('has_batch_cost', '=', False)]" groups="stock.group_stock_manager,account.group_account_user"/>
+                <separator/>
+                <filter string="Expiry Date" name="filter_expiry_date" date="expiry_date"/>
+                <filter string="Receipt Date" name="filter_receipt_date" date="receipt_date"/>
+                <group expand="0" string="Group By">
+                    <filter string="Brand" name="group_brand" context="{'group_by': 'brand_id'}"/>
+                    <filter string="Item Group" name="group_item_group" context="{'group_by': 'item_group_id'}"/>
+                    <filter string="Category" name="group_category" context="{'group_by': 'categ_id'}"/>
+                    <filter string="Product" name="group_product" context="{'group_by': 'product_id'}"/>
+                    <filter string="Batch" name="group_batch" context="{'group_by': 'lot_id'}"/>
+                    <filter string="Warehouse" name="group_warehouse" context="{'group_by': 'warehouse_id'}" groups="stock.group_stock_multi_warehouses"/>
+                    <filter string="Location" name="group_location" context="{'group_by': 'location_id'}" groups="stock.group_stock_multi_locations"/>
+                    <filter string="Expiry Month" name="group_expiry_month" context="{'group_by': 'expiry_date:month'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_grandora_onhand_batch_dashboard" model="ir.actions.act_window">
+        <field name="name">On-hand Batch Cost</field>
+        <field name="res_model">grandora.onhand.batch.dashboard</field>
+        <field name="view_mode">list,pivot,form</field>
+        <field name="search_view_id" ref="view_grandora_onhand_batch_dashboard_search"/>
+        <field name="context">{'search_default_on_hand': 1, 'pivot_row_groupby': ['brand_id', 'product_id'], 'pivot_column_groupby': ['location_id'], 'pivot_measures': ['quantity', 'batch_value']}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No on-hand batch stock found.</p>
+            <p>Use this report to review batch-level stock, expiry, valuation, latest sale price, and indicative margin.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_grandora_onhand_batch_dashboard"
+              name="On-hand Batch Cost"
+              parent="stock.menu_warehouse_report"
+              action="action_grandora_onhand_batch_dashboard"
+              sequence="260"/>
+</odoo>
