@@ -224,8 +224,8 @@
                         </div>
                         <div class="grandora-words-total">
                             <span>Total</span>
-                            <span t-esc="'{:,.2f}'.format(o.amount_total)"/>
                             <span t-esc="o.currency_id.name"/>
+                            <span t-esc="'{:,.2f}'.format(o.amount_total)"/>
                         </div>
                     </div>
                     <div class="grandora-flex grandora-remarks grandora-table-head">
