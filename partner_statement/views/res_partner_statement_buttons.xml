@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="res_partner_view_statement_buttons" model="ir.ui.view">
+        <field name="name">res.partner.view.statement.buttons</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button
+                    class="oe_stat_button"
+                    type="object"
+                    name="action_preview_activity_statement"
+                    icon="fa-list-alt"
+                    groups="partner_statement.group_activity_statement"
+                    help="Preview the default activity statement for this customer or vendor."
+                >
+                    <div class="o_form_field o_stat_info">
+                        <span class="o_stat_text">Activity</span>
+                        <span class="o_stat_text">Statement</span>
+                    </div>
+                </button>
+                <button
+                    class="oe_stat_button"
+                    type="object"
+                    name="action_preview_outstanding_statement"
+                    icon="fa-file-text-o"
+                    groups="partner_statement.group_outstanding_statement"
+                    help="Preview the default outstanding statement for this customer or vendor."
+                >
+                    <div class="o_form_field o_stat_info">
+                        <span class="o_stat_text">Outstanding</span>
+                        <span class="o_stat_text">Statement</span>
+                    </div>
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>

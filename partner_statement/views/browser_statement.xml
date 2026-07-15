@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="browser_statement_layout">
+        <style type="text/css">
+            :root { --gs-primary: #8a151b; --gs-accent: #b0966a; --gs-muted: #f5f6f3; --gs-line: #d9d9d9; }
+            * { box-sizing: border-box; }
+            body { margin: 0; color: #262626; font-family: Arial, Helvetica, sans-serif; font-size: 12px; }
+            .gs-toolbar { position: sticky; top: 0; z-index: 20; display: flex; justify-content: center; gap: 8px; padding: 12px; background: rgba(255,255,255,.97); border-bottom: 1px solid var(--gs-line); }
+            .gs-toolbar button { border: 1px solid var(--gs-primary); border-radius: 4px; padding: 8px 14px; color: #fff; background: var(--gs-primary); cursor: pointer; font-size: 14px; }
+            .gs-toolbar .gs-secondary { color: var(--gs-primary); background: #fff; }
+            .gs-page { width: 210mm; min-height: 297mm; margin: 14px auto; padding: 16mm; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,.16); }
+            .gs-header { display: flex; justify-content: space-between; gap: 24px; padding-bottom: 12px; border-bottom: 3px solid var(--gs-primary); }
+            .gs-brand { display: flex; align-items: center; gap: 12px; color: var(--gs-primary); }
+            .gs-logo { max-width: 150px; max-height: 48px; object-fit: contain; object-position: left center; }
+            .gs-company-name { font-weight: 700; font-size: 16px; }
+            .gs-company-details { color: #555; font-size: 10px; line-height: 1.55; }
+            .gs-title { margin: 22px 0 6px; color: var(--gs-primary); font-size: 24px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; }
+            .gs-subtitle { margin-bottom: 18px; color: #666; }
+            .gs-info { display: grid; grid-template-columns: 1.25fr 1fr; margin-bottom: 20px; border: 1px solid var(--gs-line); }
+            .gs-info > div { padding: 12px; }
+            .gs-info > div + div { border-left: 1px solid var(--gs-line); }
+            .gs-label { margin-bottom: 5px; color: #777; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+            .gs-value { font-size: 13px; font-weight: 600; }
+            .gs-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 7px 16px; font-size: 11px; }
+            .gs-meta strong { display: inline-block; min-width: 80px; color: #666; }
+            .gs-table { width: 100%; margin-top: 12px; border-collapse: collapse; font-size: 10px; }
+            .gs-table th { padding: 8px 7px; color: #fff; background: var(--gs-primary); font-size: 9px; letter-spacing: .03em; text-align: left; text-transform: uppercase; }
+            .gs-table td { padding: 7px; border-bottom: 1px solid var(--gs-line); vertical-align: top; }
+            .gs-table tr:nth-child(even) td { background: #fcfcfb; }
+            .gs-table .amount { text-align: right; white-space: nowrap; }
+            .gs-table .summary td { font-weight: 700; background: var(--gs-muted); border-top: 2px solid var(--gs-primary); }
+            .gs-section-title { margin: 20px 0 8px; color: var(--gs-primary); font-size: 13px; font-weight: 700; }
+            .gs-aging th { background: #697066; }
+            .gs-footer { margin-top: 28px; padding-top: 10px; border-top: 1px solid var(--gs-line); color: #666; font-size: 9px; line-height: 1.5; }
+            .gs-empty { padding: 20px; border: 1px solid var(--gs-line); text-align: center; color: #666; }
+            @media print {
+                @page { size: A4 portrait; margin: 0; }
+                html, body { width: 210mm; margin: 0 !important; background: #fff !important; }
+                .gs-toolbar { display: none !important; }
+                .gs-page { min-height: 0; margin: 0; padding: 14mm; box-shadow: none; }
+                .gs-table tr { page-break-inside: avoid; }
+            }
+        </style>
+        <div class="gs-toolbar">
+            <button type="button" onclick="window.print();">Print / Save as PDF</button>
+            <button type="button" class="gs-secondary" onclick="window.close();">Close</button>
+        </div>
+        <t t-raw="0"/>
+    </template>
+
+    <template id="browser_statement_document">
+        <t t-call="partner_statement.browser_statement_layout">
+            <div class="gs-page">
+                <header class="gs-header">
+                    <div class="gs-brand">
+                        <img t-if="company.logo" t-att-src="'/web/image/res.company/%s/logo' % company.id" t-att-alt="company.name" class="gs-logo"/>
+                        <div>
+                            <div class="gs-company-name"><span t-esc="company.name"/></div>
+                            <div class="gs-company-details">
+                                <span t-if="company.phone">Tel: <span t-esc="company.phone"/><br/></span>
+                                <span t-if="company.email"><span t-esc="company.email"/><br/></span>
+                                <span t-if="company.street"><span t-esc="company.street"/>, </span><span t-esc="company.city or ''"/><span t-if="company.country_id">, <span t-esc="company.country_id.name"/></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gs-company-details" style="text-align:right;">
+                        <strong>Generated:</strong> <span t-esc="d['today']"/><br/>
+                        <span t-if="company.vat"><strong>Tax ID:</strong> <span t-esc="company.vat"/></span>
+                    </div>
+                </header>
+                <h1 class="gs-title"><span t-esc="statement_title"/></h1>
+                <div class="gs-subtitle"><span t-esc="statement_subtitle"/></div>
+                <section class="gs-info">
+                    <div>
+                        <div class="gs-label">Customer</div>
+                        <div class="gs-value"><span t-esc="o.name"/></div>
+                        <div class="gs-company-details">
+                            <span t-if="o.ref">Customer Code: <span t-esc="o.ref"/><br/></span>
+                            <span t-if="o.street"><span t-esc="o.street"/><br/></span>
+                            <span t-if="o.street2"><span t-esc="o.street2"/><br/></span>
+                            <span t-if="o.city"><span t-esc="o.city"/></span><span t-if="o.city and o.country_id">, </span><span t-if="o.country_id" t-esc="o.country_id.name"/><br t-if="o.city or o.country_id"/>
+                            <span t-if="o.phone">Tel: <span t-esc="o.phone"/></span>
+                        </div>
+                    </div>
+                    <div class="gs-meta">
+                        <div><strong>Statement Date</strong><span t-esc="d['end']"/></div>
+                        <div t-if="is_activity"><strong>Period From</strong><span t-esc="d['start']"/></div>
+                        <div t-if="is_activity"><strong>Period To</strong><span t-esc="d['end']"/></div>
+                        <div><strong>Account</strong>Receivable</div>
+                    </div>
+                </section>
+                <t t-if="d['currencies']">
+                    <t t-foreach="d['currencies'].items()" t-as="currency_item">
+                        <t t-set="display_currency" t-value="Currencies[currency_item[0]]"/>
+                        <t t-set="currency" t-value="currency_item[1]"/>
+                        <div class="gs-section-title">Currency: <span t-esc="display_currency.name"/></div>
+                        <table class="gs-table">
+                            <thead>
+                                <tr>
+                                    <th>Reference</th>
+                                    <th>Date</th>
+                                    <th t-if="not is_activity">Due Date</th>
+                                    <th>Description</th>
+                                    <th class="amount">Original</th>
+                                    <th t-if="is_activity" class="amount">Applied</th>
+                                    <th class="amount">Open Amount</th>
+                                    <th t-if="not is_activity" class="amount">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-if="is_activity">
+                                    <td></td><td><span t-esc="d['prior_day']"/></td><td colspan="3">Opening Balance</td>
+                                    <td class="amount"><span t-esc="currency['balance_forward']" t-options="{'widget': 'monetary', 'display_currency': display_currency}"/></td>
+                                </tr>
+                                <tr t-foreach="currency['lines']" t-as="line">
+                                    <td><span t-esc="line['move_id']"/></td>
+                                    <td><span t-esc="line['date']"/></td>
+                                    <td t-if="not is_activity"><span t-esc="line['date_maturity']"/></td>
+                                    <td><span t-esc="line['name'] if line['name'] != '/' else line['ref']"/></td>
+                                    <td class="amount"><span t-esc="line['amount']" t-options="{'widget': 'monetary', 'display_currency': display_currency}"/></td>
+                                    <td t-if="is_activity" class="amount"><span t-esc="line.get('applied_amount', 0.0)" t-options="{'widget': 'monetary', 'display_currency': display_currency}"/></td>
+                                    <td class="amount"><span t-esc="line['open_amount']" t-options="{'widget': 'monetary', 'display_currency': display_currency}"/></td>
+                                    <td t-if="not is_activity" class="amount"><span t-esc="line['balance']" t-options="{'widget': 'monetary', 'display_currency': display_currency}"/></td>
+                                </tr>
+                                <tr class="summary">
+                                    <td></td><td><span t-esc="d['end']"/></td>
+                                    <td t-if="not is_activity"></td>
+                                    <td t-att-colspan="3 if is_activity else 2">Closing Balance</td>
+                                    <td class="amount"><span t-esc="currency['amount_due']" t-options="{'widget': 'monetary', 'display_currency': display_currency}"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <t t-if="currency['buckets']">
+                            <div class="gs-section-title">Aging Summary</div>
+                            <table class="gs-table gs-aging">
+                                <thead><tr><th t-foreach="bucket_labels" t-as="label"><span t-esc="label"/></th></tr></thead>
+                                <tbody><tr><td t-foreach="['current', 'b_1_30', 'b_30_60', 'b_60_90', 'b_90_120', 'b_over_120', 'balance']" t-as="bucket" class="amount"><span t-esc="currency['buckets'][bucket]" t-options="{'widget': 'monetary', 'display_currency': display_currency}"/></td></tr></tbody>
+                            </table>
+                        </t>
+                    </t>
+                </t>
+                <div t-else="" class="gs-empty">No entries were found for this statement.</div>
+                <footer class="gs-footer">
+                    This statement is generated from posted invoices, credit notes, and payments recorded in our system. Please contact us if you require any clarification.
+                </footer>
+            </div>
+        </t>
+    </template>
+
+    <template id="activity_statement_browser">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="d" t-value="data.get(o.id)"/>
+                <t t-set="is_activity" t-value="True"/>
+                <t t-set="statement_title" t-value="'Customer Activity Statement'"/>
+                <t t-set="statement_subtitle" t-value="'Account activity from %s to %s' % (d['start'], d['end'])"/>
+                <t t-call="partner_statement.browser_statement_document" t-lang="o.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="outstanding_statement_browser">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="d" t-value="data.get(o.id)"/>
+                <t t-set="is_activity" t-value="False"/>
+                <t t-set="statement_title" t-value="'Customer Outstanding Statement'"/>
+                <t t-set="statement_subtitle" t-value="'Open receivables and customer credits as of %s' % d['end']"/>
+                <t t-call="partner_statement.browser_statement_document" t-lang="o.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_print_activity_statement_browser" model="ir.actions.report">
+        <field name="name">Activity Statement Browser Preview</field>
+        <field name="model">res.partner</field>
+        <field name="report_name">partner_statement.activity_statement_browser</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_file">partner_statement.activity_statement_browser</field>
+    </record>
+    <record id="action_print_outstanding_statement_browser" model="ir.actions.report">
+        <field name="name">Outstanding Statement Browser Preview</field>
+        <field name="model">res.partner</field>
+        <field name="report_name">partner_statement.outstanding_statement_browser</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_file">partner_statement.outstanding_statement_browser</field>
+    </record>
+</odoo>
