@@ -160,7 +160,7 @@ class GrandoraOnhandBatchDashboard(models.Model):
                         pt.categ_id,
                         qb.lot_id,
                         lot.name AS batch_number,
-                        ''::varchar AS supplier_batch,
+                        lot.supplier_lot AS supplier_batch,
                         wh.id AS warehouse_id,
                         qb.location_id,
                         qb.company_id,

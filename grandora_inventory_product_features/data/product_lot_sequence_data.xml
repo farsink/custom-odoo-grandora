@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Force OCA product_lot_sequence to global mode so one common sequence
+        is used across all products. This uses set_param so it updates existing
+        databases even when the OCA default parameter was loaded as noupdate.
+    -->
+    <function model="ir.config_parameter" name="set_param">
+        <value eval="'product_lot_sequence.policy'"/>
+        <value eval="'global'"/>
+    </function>
+
+    <!--
+        Configure the stock.lot global sequence used by Odoo core and OCA
+        product_lot_sequence. Do not write number_next here: existing next
+        numbers must never be reset during module upgrades.
+    -->
+    <function model="ir.sequence" name="write">
+        <function model="ir.sequence" name="search">
+            <value eval="[('code', '=', 'stock.lot.serial')]"/>
+        </function>
+        <value eval="{
+            'name': 'Internal Lot Number',
+            'prefix': 'LOT-',
+            'padding': 7,
+            'number_increment': 1,
+        }"/>
+    </function>
+
+</odoo>

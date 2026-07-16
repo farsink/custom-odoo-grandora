@@ -7,6 +7,7 @@ This repository vendors the following Odoo 18 Community Association (OCA) module
 | `partner_statement` | `https://github.com/OCA/account-financial-reporting` | `18.0` |
 | `report_xlsx` | `https://github.com/OCA/reporting-engine` | `18.0` |
 | `report_xlsx_helper` | `https://github.com/OCA/reporting-engine` | `18.0` |
+| `product_lot_sequence` | `https://github.com/OCA/product-attribute` | `18.0` |
 
 All vendored modules retain their upstream AGPL-3 license and copyright notices.
 

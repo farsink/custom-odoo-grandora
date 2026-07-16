@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_form_inherit_batch_entry" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.batch.entry</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='picking_type_code']" position="after">
+                <field name="show_batch_entry" invisible="1"/>
+            </xpath>
+
+            <!-- Add receipt batch entry before standard operations. -->
+            <xpath expr="//page[@name='operations']" position="before">
+                <page string="Receipt Batches" name="receipt_batches" invisible="not show_batch_entry">
+                    <div class="oe_button_box" name="batch_buttons">
+                        <button name="action_generate_batch_lines"
+                                type="object"
+                                string="Prepare Batch Lines"
+                                class="btn btn-secondary"
+                                invisible="state in ('done', 'cancel')"/>
+                        <button name="action_generate_lots"
+                                type="object"
+                                string="Generate Lots"
+                                class="btn btn-primary"
+                                invisible="state in ('done', 'cancel')"/>
+                        <button name="action_validate_with_lots"
+                                type="object"
+                                string="Validate Receipt"
+                                class="btn btn-success"
+                                invisible="state in ('done', 'cancel')"/>
+                        <button name="action_add_batch"
+                                type="object"
+                                string="Add Another Batch"
+                                class="btn btn-secondary"
+                                invisible="state in ('done', 'cancel')"/>
+                    </div>
+                    <field name="batch_line_ids" readonly="state in ('done', 'cancel')">
+                        <list editable="bottom">
+                            <field name="move_id" string="Receipt Line"/>
+                            <field name="product_id" readonly="1"/>
+                            <field name="ordered_qty" readonly="1"/>
+                            <field name="product_uom_id" readonly="1" optional="show"/>
+                            <field name="received_qty"/>
+                            <field name="supplier_lot"/>
+                            <field name="expiry_date"/>
+                            <field name="manufacture_date" optional="show"/>
+                            <field name="quality_status" optional="show"/>
+                            <field name="internal_lot_id" readonly="1" optional="show"/>
+                            <field name="lot_name" readonly="1" optional="show"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Receipt Batch Line form view for "Add Another Batch" -->
+    <record id="grandora_receipt_batch_line_form_view" model="ir.ui.view">
+        <field name="name">grandora.receipt.batch.line.form</field>
+        <field name="model">grandora.receipt.batch.line</field>
+        <field name="arch" type="xml">
+            <form string="Receipt Batch">
+                <sheet>
+                    <group>
+                        <field name="picking_id" invisible="1"/>
+                        <field name="move_id" string="Receipt Line"/>
+                        <field name="product_id" readonly="1"/>
+                        <field name="ordered_qty" readonly="1"/>
+                        <field name="received_qty"/>
+                        <field name="supplier_lot"/>
+                        <field name="expiry_date"/>
+                        <field name="manufacture_date" optional="show"/>
+                        <field name="quality_status"/>
+                        <field name="internal_lot_id" readonly="1"/>
+                        <field name="lot_name" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

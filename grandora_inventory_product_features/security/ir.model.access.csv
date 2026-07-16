@@ -3,3 +3,5 @@ access_product_brand_user,product.brand.user,model_product_brand,base.group_user
 access_product_brand_manager,product.brand.manager,model_product_brand,stock.group_stock_manager,1,1,1,1
 access_product_item_group_user,product.item.group.user,model_product_item_group,base.group_user,1,0,0,0
 access_product_item_group_manager,product.item.group.manager,model_product_item_group,stock.group_stock_manager,1,1,1,1
+access_grandora_receipt_batch_line_user,grandora.receipt.batch.line.user,model_grandora_receipt_batch_line,stock.group_stock_user,1,1,1,1
+access_grandora_receipt_batch_line_manager,grandora.receipt.batch.line.manager,model_grandora_receipt_batch_line,stock.group_stock_manager,1,1,1,1
