@@ -2,30 +2,18 @@
 <odoo>
 
     <!--
-        Force OCA product_lot_sequence to global mode so one common sequence
-        is used across all products. This uses set_param so it updates existing
-        databases even when the OCA default parameter was loaded as noupdate.
+        Use OCA's per-product no-gap sequence policy. Grandora synchronizes
+        product-derived prefixes without modifying the vendored OCA addon.
     -->
     <function model="ir.config_parameter" name="set_param">
         <value eval="'product_lot_sequence.policy'"/>
-        <value eval="'global'"/>
+        <value eval="'product'"/>
     </function>
 
-    <!--
-        Configure the stock.lot global sequence used by Odoo core and OCA
-        product_lot_sequence. Do not write number_next here: existing next
-        numbers must never be reset during module upgrades.
-    -->
-    <function model="ir.sequence" name="write">
-        <function model="ir.sequence" name="search">
-            <value eval="[('code', '=', 'stock.lot.serial')]"/>
-        </function>
-        <value eval="{
-            'name': 'Internal Lot Number',
-            'prefix': 'LOT-',
-            'padding': 7,
-            'number_increment': 1,
-        }"/>
-    </function>
+    <!-- Initialize/synchronize tracked products without resetting used counters. -->
+    <function model="product.template" name="_grandora_sync_existing_lot_sequences"/>
+
+    <!-- Backfill the stored editable lot name introduced on receipt rows. -->
+    <function model="grandora.receipt.batch.line" name="_grandora_backfill_lot_names"/>
 
 </odoo>

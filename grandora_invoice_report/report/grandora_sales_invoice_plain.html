@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Grandora Sales Invoice Template</title>
+    <style>
+        @page { size: A4; margin: 0; }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; background: #e9ecef; }
+        body { font-family: "Times New Roman", Times, serif; color: #000; font-size: 12px; line-height: 1.25; }
+        .invoice-page { width: 210mm; min-height: 297mm; margin: 12px auto; padding: 20px 24px; background: #fff; display: flex; flex-direction: column; }
+        .flex { display: flex; }
+        .grid { display: grid; }
+        .between { justify-content: space-between; }
+        .center { text-align: center; }
+        .right { text-align: right; }
+        .bold { font-weight: 700; }
+        .maroon { color: #8a151b; }
+        .gold { color: #b0966a; }
+        .table-head { background: #e4eae2; }
+
+        .header { align-items: center; margin-bottom: 8px; padding-top: 4px; }
+        .brand-block { width: 38%; display: flex; align-items: center; gap: 8px; }
+        .lettermark { width: 58px; height: 58px; object-fit: contain; flex: 0 0 auto; }
+        .wordmark { flex: 1 1 auto; text-align: center; line-height: 1.12; }
+        .wordmark-logo { width: 100%; max-height: 44px; object-fit: contain; display: block; }
+        .wordmark-web { margin-top: 4px; font-size: 12px; font-weight: 700; }
+        .company { width: 38%; padding-left: 8px; font-size: 11px; }
+        .arabic { width: 24%; padding-top: 2px; text-align: right; }
+        .arabic-title { font-size: 34px; line-height: .95; font-weight: 700; }
+        .arabic-subtitle { font-size: 16px; font-weight: 700; }
+        .divider { height: 3px; margin-bottom: 4px; background: #8a151b; }
+
+        .box { border: 1px solid #000; }
+        .meta { min-height: 208px; margin-bottom: 8px; }
+        .meta-title { padding: 6px 8px; border-top: 2px solid #000; border-bottom: 2px solid #000; font-size: 16px; letter-spacing: .02em; }
+        .meta-row { display: grid; grid-template-columns: 1.2fr 1fr; border-bottom: 1px solid #000; }
+        .meta-row:last-child { border-bottom: 0; }
+        .meta-cell { min-height: 86px; padding: 7px 10px; }
+        .meta-cell:first-child { border-right: 1px solid #000; }
+        .heading { margin-bottom: 5px; font-weight: 700; }
+        .write-space { min-height: 40px; }
+        .contact { margin-top: 4px; }
+        .kv { display: grid; grid-template-columns: 112px 10px 1fr; row-gap: 4px; align-items: start; }
+        .lines-wrap { border: 1px solid #000; border-bottom: 0; flex: 1 1 auto; min-height: 0; display: flex; }
+        .lines { width: 100%; height: 100%; border-collapse: collapse; table-layout: fixed; font-size: 11px; }
+        .lines th, .lines td { border-left: 1px solid #000; border-right: 1px solid #000; padding: 5px 6px; vertical-align: top; }
+        .lines th { border-bottom: 1px solid #000; text-align: center; font-weight: 400; }
+        .lines th:first-child, .lines td:first-child { border-left: 0; }
+        .lines th:last-child, .lines td:last-child { border-right: 0; }
+        .empty-row td { height: 29px; }
+        .fill-row { height: 100%; }
+        .fill-row td { height: 100%; padding: 0; }
+
+        .footer { border: 1px solid #000; }
+        .words { display: flex; align-items: center; min-height: 31px; padding: 8px; border-bottom: 1px solid #000; }
+        .words-left { flex: 1 1 auto; display: flex; gap: 8px; align-items: center; }
+        .words-label { width: 64px; }
+        .words-total { flex: 0 0 240px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; font-weight: 700; }
+        .remarks { align-items: center; padding: 8px; border-bottom: 1px solid #000; }
+        .remarks .label { width: 96px; font-size: 13px; font-weight: 700; }
+        .remarks .text { flex: 1 1 auto; min-height: 16px; }
+        .bottom { grid-template-columns: 1.5fr 1.5fr 1fr; min-height: 140px; }
+        .bottom-panel { padding: 8px; border-right: 1px solid #000; }
+        .bottom-panel:last-child { border-right: 0; }
+        .terms { font-size: 10px; line-height: 1.25; }
+        .terms h3 { margin: 0 0 4px; font-size: 11px; }
+        .terms ol { margin: 0; padding-left: 14px; }
+        .terms li { margin-bottom: 4px; }
+        .receipt { display: flex; flex-direction: column; justify-content: space-between; }
+        .receipt-note { font-size: 11px; }
+        .sign-line { display: flex; align-items: end; gap: 8px; margin-top: 10px; }
+        .sign-label { width: 56px; }
+        .line { flex: 1 1 auto; height: 16px; border-bottom: 1px solid #000; }
+        .delivered { display: flex; flex-direction: column; }
+        .delivered-space { height: 48px; }
+
+        @media print {
+            html, body { width: 210mm; min-height: 297mm; background: #fff; }
+            .invoice-page { margin: 0; box-shadow: none; }
+            .lines tr, .bottom-panel { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <main class="invoice-page">
+        <header class="flex between header">
+            <div class="brand-block maroon">
+                <img src="../static/src/img/grandora_letter_mark.png" alt="Grandora lettermark" class="lettermark"/>
+                <div class="wordmark">
+                    <img src="../static/src/img/grandora_logo.png" alt="Grandora Gourmet Trading" class="wordmark-logo"/>
+                    <div class="wordmark-web">www.grandoragourmet.com</div>
+                </div>
+            </div>
+            <div class="company maroon">
+                <div class="bold" style="font-size:13.5px; margin-bottom:4px;">Grandora Gourmet Trading W.L.L</div>
+                <div>Tel : 77848974</div>
+                <div>P.O. Box : 30264</div>
+                <div>Doha - Qatar</div>
+                <div>Email : info@grandoragourmet.com</div>
+            </div>
+            <div class="arabic maroon">
+                <div class="arabic-title" dir="rtl">جراندورا</div>
+                <div class="arabic-subtitle gold" dir="rtl">لتجارة المواد الغذائية</div>
+            </div>
+        </header>
+
+        <div class="divider"></div>
+
+        <section class="box meta" aria-label="Blank invoice details area">
+            <div class="meta-title bold center">SALES INVOICE</div>
+            <div class="meta-row">
+                <div class="meta-cell"></div>
+                <div class="meta-cell"></div>
+            </div>
+            <div class="meta-row">
+                <div class="meta-cell"></div>
+                <div class="meta-cell"></div>
+            </div>
+        </section>
+
+        <section class="lines-wrap">
+            <table class="lines">
+                <colgroup>
+                    <col style="width:5%;"/><col style="width:10%;"/><col style="width:47%;"/>
+                    <col style="width:8%;"/><col style="width:10%;"/><col style="width:10%;"/><col style="width:10%;"/>
+                </colgroup>
+                <thead>
+                    <tr class="table-head">
+                        <th>SL.<br/>No.</th><th>CODE</th><th>DESCRIPTION</th><th>UOM</th><th>QUANTITY</th><th>PRICE</th><th>AMOUNT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr class="empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr class="empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr class="empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr class="empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr class="empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr class="empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr class="empty-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr class="fill-row"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer class="footer">
+            <div class="words">
+                <div class="words-left"><span class="words-label">In words</span><span>:</span></div>
+                <div class="words-total"><span>Total</span><span></span><span class="right"></span></div>
+            </div>
+            <div class="flex remarks table-head">
+                <div class="label">Remarks</div><div class="text"></div><div class="label right" dir="rtl">ملاحظات</div>
+            </div>
+            <div class="grid bottom">
+                <section class="bottom-panel terms">
+                    <h3 class="bold">TERMS &amp; CONDITIONS</h3>
+                    <ol>
+                        <li>Goods must be inspected upon delivery. No claims for shortages, damages, or incorrect deliveries will be accepted after receipt and acknowledgment.</li>
+                        <li>Goods sold are non-returnable and non-exchangeable except for approved quality defects.</li>
+                        <li>Payments must be made according to the agreed terms and in favour of Grandora Gourmet Trading.</li>
+                        <li>Grandora Gourmet Trading is not responsible for goods that are improperly stored or used after their expiry date.</li>
+                    </ol>
+                </section>
+                <section class="bottom-panel receipt">
+                    <div class="flex between"><span>Customer Receipt</span><span class="bold" dir="rtl">إيصال العميل</span></div>
+                    <div class="flex between receipt-note"><span style="width:60%;">Received in good condition except as stated above.</span><span class="right bold" style="width:40%;" dir="rtl">استلمت البضاعة في حالة جيدة ماعدا ماهو مدون أعلاه.</span></div>
+                    <div>
+                        <div class="sign-line"><span class="sign-label">Signature</span><span class="line"></span><span class="sign-label right bold" dir="rtl">التوقيع</span></div>
+                        <div class="sign-line"><span class="sign-label">Name</span><span class="line"></span><span class="sign-label right bold" dir="rtl">الاسم</span></div>
+                        <div class="sign-line"><span class="sign-label">Date</span><span class="line"></span><span class="sign-label right bold" dir="rtl">التاريخ</span></div>
+                    </div>
+                </section>
+                <section class="bottom-panel delivered">
+                    <div>Delivered By :</div><div class="delivered-space"></div><div>Date : ........................</div>
+                </section>
+            </div>
+        </footer>
+    </main>
+</body>
+</html>

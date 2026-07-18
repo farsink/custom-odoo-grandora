@@ -9,31 +9,19 @@
                 <field name="show_batch_entry" invisible="1"/>
             </xpath>
 
+            <!-- Put the only custom receipt action beside core Validate/Print. -->
+            <xpath expr="//header/button[@name='do_print_picking']" position="before">
+                <button name="action_generate_lots"
+                        type="object"
+                        string="Generate Lots"
+                        class="btn btn-secondary"
+                        groups="stock.group_stock_user"
+                        invisible="not show_batch_entry or state in ('done', 'cancel')"/>
+            </xpath>
+
             <!-- Add receipt batch entry before standard operations. -->
             <xpath expr="//page[@name='operations']" position="before">
                 <page string="Receipt Batches" name="receipt_batches" invisible="not show_batch_entry">
-                    <div class="oe_button_box" name="batch_buttons">
-                        <button name="action_generate_batch_lines"
-                                type="object"
-                                string="Prepare Batch Lines"
-                                class="btn btn-secondary"
-                                invisible="state in ('done', 'cancel')"/>
-                        <button name="action_generate_lots"
-                                type="object"
-                                string="Generate Lots"
-                                class="btn btn-primary"
-                                invisible="state in ('done', 'cancel')"/>
-                        <button name="action_validate_with_lots"
-                                type="object"
-                                string="Validate Receipt"
-                                class="btn btn-success"
-                                invisible="state in ('done', 'cancel')"/>
-                        <button name="action_add_batch"
-                                type="object"
-                                string="Add Another Batch"
-                                class="btn btn-secondary"
-                                invisible="state in ('done', 'cancel')"/>
-                    </div>
                     <field name="batch_line_ids" readonly="state in ('done', 'cancel')">
                         <list editable="bottom">
                             <field name="move_id" string="Receipt Line"/>
@@ -46,7 +34,7 @@
                             <field name="manufacture_date" optional="show"/>
                             <field name="quality_status" optional="show"/>
                             <field name="internal_lot_id" readonly="1" optional="show"/>
-                            <field name="lot_name" readonly="1" optional="show"/>
+                            <field name="lot_name" readonly="internal_lot_id" optional="show"/>
                         </list>
                     </field>
                 </page>
@@ -72,7 +60,7 @@
                         <field name="manufacture_date" optional="show"/>
                         <field name="quality_status"/>
                         <field name="internal_lot_id" readonly="1"/>
-                        <field name="lot_name" readonly="1"/>
+                        <field name="lot_name" readonly="internal_lot_id"/>
                     </group>
                 </sheet>
             </form>

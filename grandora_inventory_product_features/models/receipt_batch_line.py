@@ -78,11 +78,29 @@ class GrandoraReceiptBatchLine(models.Model):
     )
     lot_name = fields.Char(
         string="Lot Number",
-        related="internal_lot_id.name",
-        readonly=True,
+        copy=False,
+        help=(
+            "Enter a manual lot number or leave blank to generate the next "
+            "product lot number automatically."
+        ),
     )
 
-    @api.depends("move_id", "supplier_lot", "internal_lot_id")
+    @api.model
+    def _grandora_backfill_lot_names(self):
+        """Backfill the new stored field for receipt rows created before upgrade."""
+        self.env.cr.execute(
+            """
+            UPDATE grandora_receipt_batch_line AS line
+               SET lot_name = lot.name
+              FROM stock_lot AS lot
+             WHERE line.internal_lot_id = lot.id
+               AND COALESCE(line.lot_name, '') = ''
+            """
+        )
+        self.env.invalidate_all()
+        return True
+
+    @api.depends("move_id", "supplier_lot", "lot_name")
     def _compute_display_name(self):
         for line in self:
             parts = []

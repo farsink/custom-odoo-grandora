@@ -38,6 +38,16 @@ class StockLot(models.Model):
         help="Quality inspection status for this lot.",
     )
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Keep product sequences current for every automatic lot creation path."""
+        product_ids = [values.get("product_id") for values in vals_list if values.get("product_id")]
+        if product_ids:
+            self.env["product.product"].browse(product_ids).mapped(
+                "product_tmpl_id"
+            )._grandora_ensure_lot_sequence()
+        return super().create(vals_list)
+
     @api.constrains("name", "company_id")
     def _check_unique_lot_name_per_company(self):
         """Enforce globally unique internal lot names per company.

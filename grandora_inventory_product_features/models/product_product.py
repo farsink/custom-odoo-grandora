@@ -10,6 +10,10 @@ class ProductProduct(models.Model):
             product_type = vals.setdefault("type", "consu")
             if product_type == "consu":
                 vals.setdefault("is_storable", True)
-                if "tracking" not in vals and vals.get("is_storable"):
+                if (
+                    "tracking" not in vals
+                    and vals.get("is_storable")
+                    and self.env["product.template"]._grandora_should_default_lot_tracking()
+                ):
                     vals["tracking"] = "lot"
         return super().create(vals_list)

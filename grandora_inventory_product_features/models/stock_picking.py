@@ -31,16 +31,11 @@ class StockPicking(models.Model):
         self.ensure_one()
         if not self.show_batch_entry:
             return
-        existing = self.batch_line_ids
-        existing_product_move = {
-            (l.move_id.id, l.supplier_lot, l.expiry_date): l
-            for l in existing
-        }
+        existing_move_ids = set(self.batch_line_ids.move_id.ids)
         for move in self.move_ids.filtered(
             lambda m: m.product_id.tracking == "lot" and m.state not in ("done", "cancel")
         ):
-            key = (move.id, False, False)
-            if key not in existing_product_move:
+            if move.id not in existing_move_ids:
                 self.env["grandora.receipt.batch.line"].create(
                     {
                         "picking_id": self.id,
@@ -62,21 +57,27 @@ class StockPicking(models.Model):
                 continue
             if float_is_zero(line.received_qty, precision_rounding=line.product_uom_id.rounding):
                 continue
-            lot = self._create_lot_for_batch_line(line)
-            line.internal_lot_id = lot.id
+            lot = self._resolve_lot_for_batch_line(line)
+            line.write({"internal_lot_id": lot.id, "lot_name": lot.name})
+
+    def _grandora_receipts_requiring_lot_automation(self):
+        return self.filtered(
+            lambda picking: picking.show_batch_entry
+            and any(move.product_id.tracking == "lot" for move in picking.move_ids)
+        )
+
+    def button_validate(self):
+        """Prepare and assign receipt lots before Odoo runs its sanity checks."""
+        qualifying_pickings = self._grandora_receipts_requiring_lot_automation()
+        for picking in qualifying_pickings:
+            picking.action_generate_batch_lines()
+            picking._check_batch_lines()
+            picking.action_generate_lots()
+            picking._assign_lots_to_move_lines()
+        return super().button_validate()
 
     def action_validate_with_lots(self):
-        """Validate the receipt, creating lots and assigning to move lines.
-        
-        1. Generate lots for any batch lines that don't have them.
-        2. Validate batch line data (quantities, required fields).
-        3. Assign lots to stock.move.line records.
-        4. Call standard validation.
-        """
-        self.ensure_one()
-        self._check_batch_lines()
-        self.action_generate_lots()
-        self._assign_lots_to_move_lines()
+        """Compatibility entry point; standard Validate now performs automation."""
         return self.button_validate()
 
     def action_add_batch(self):
@@ -100,9 +101,8 @@ class StockPicking(models.Model):
         """Get all batch lines for a specific stock move."""
         return self.batch_line_ids.filtered(lambda l: l.move_id == move)
 
-    def _create_lot_for_batch_line(self, line):
-        """Create a stock.lot record for a batch line."""
-        lot_vals = {
+    def _lot_values_from_batch_line(self, line):
+        return {
             "product_id": line.product_id.id,
             "company_id": self.company_id.id,
             "supplier_lot": line.supplier_lot or "",
@@ -111,10 +111,80 @@ class StockPicking(models.Model):
             "expiration_date": line.expiry_date,
             "manufacture_date": line.manufacture_date,
         }
-        # The OCA product_lot_sequence module will auto-assign the
-        # next global sequence number to the name field.
-        lot = self.env["stock.lot"].create(lot_vals)
-        return lot
+
+    def _check_reused_lot_metadata(self, line, lot):
+        """Block conflicting non-empty metadata on a reused manual lot."""
+        conflicts = []
+        if line.supplier_lot and lot.supplier_lot and line.supplier_lot != lot.supplier_lot:
+            conflicts.append(_("Supplier Batch"))
+        lot_expiry = fields.Date.to_date(lot.expiration_date)
+        if line.expiry_date and lot_expiry and line.expiry_date != lot_expiry:
+            conflicts.append(_("Expiry Date"))
+        if (
+            line.manufacture_date
+            and lot.manufacture_date
+            and line.manufacture_date != lot.manufacture_date
+        ):
+            conflicts.append(_("Manufacture Date"))
+        if conflicts:
+            raise ValidationError(
+                _(
+                    "Lot '%(lot)s' already exists for product '%(product)s' with "
+                    "different metadata: %(fields)s.",
+                    lot=lot.name,
+                    product=line.product_id.display_name,
+                    fields=", ".join(conflicts),
+                )
+            )
+
+    def _fill_blank_reused_lot_metadata(self, line, lot):
+        """Enrich blank metadata without overwriting the lot's existing history."""
+        values = {}
+        if line.supplier_lot and not lot.supplier_lot:
+            values["supplier_lot"] = line.supplier_lot
+        if line.expiry_date and not lot.expiration_date:
+            values["expiration_date"] = line.expiry_date
+        if line.manufacture_date and not lot.manufacture_date:
+            values["manufacture_date"] = line.manufacture_date
+        if self.purchase_id and not lot.purchase_order_id:
+            values["purchase_order_id"] = self.purchase_id.id
+        if not lot.receipt_id:
+            values["receipt_id"] = self.id
+        if values:
+            lot.write(values)
+
+    def _resolve_lot_for_batch_line(self, line):
+        """Reuse/create a manual lot, or generate one when the name is blank."""
+        manual_name = (line.lot_name or "").strip()
+        if not manual_name:
+            return self.env["stock.lot"].create(self._lot_values_from_batch_line(line))
+
+        lot = self.env["stock.lot"].search(
+            [
+                ("name", "=", manual_name),
+                "|",
+                ("company_id", "=", self.company_id.id),
+                ("company_id", "=", False),
+            ],
+            limit=1,
+        )
+        if lot:
+            if lot.product_id != line.product_id:
+                raise ValidationError(
+                    _(
+                        "Lot '%(lot)s' belongs to '%(lot_product)s', not '%(product)s'.",
+                        lot=manual_name,
+                        lot_product=lot.product_id.display_name,
+                        product=line.product_id.display_name,
+                    )
+                )
+            self._check_reused_lot_metadata(line, lot)
+            self._fill_blank_reused_lot_metadata(line, lot)
+            return lot
+
+        values = self._lot_values_from_batch_line(line)
+        values["name"] = manual_name
+        return self.env["stock.lot"].create(values)
 
     def _grandora_receipt_date(self):
         self.ensure_one()
@@ -181,29 +251,6 @@ class StockPicking(models.Model):
 
                 product_tmpl = product.product_tmpl_id
 
-                # Supplier batch requirement check
-                if (
-                    product_tmpl.require_supplier_batch
-                    or categ.require_supplier_batch
-                    or product.tracking == "lot"
-                ) and not line.supplier_lot:
-                    raise ValidationError(
-                        _(
-                            "Supplier batch is required for product '%(product)s' but none was provided.",
-                            product=product.display_name,
-                        )
-                    )
-
-                # Expiry date requirement
-                if product_tmpl.require_expiry_date or categ.require_expiry_date or product.use_expiration_date:
-                    if not line.expiry_date:
-                        raise ValidationError(
-                            _(
-                                "Expiry date is required for product '%(product)s' but none was provided.",
-                                product=product.display_name,
-                            )
-                        )
-
                 # Expiry before receipt date
                 if line.expiry_date and line.expiry_date < receipt_date:
                     raise ValidationError(
@@ -216,7 +263,33 @@ class StockPicking(models.Model):
                         )
                     )
 
-                # Minimum shelf-life check
+                # Manufacture date consistency checks (all dates remain optional).
+                if line.manufacture_date and line.manufacture_date > receipt_date:
+                    raise ValidationError(
+                        _(
+                            "Manufacture date (%(manufacture)s) for product '%(product)s' "
+                            "cannot be after the receipt date (%(receipt)s).",
+                            manufacture=line.manufacture_date,
+                            product=product.display_name,
+                            receipt=receipt_date,
+                        )
+                    )
+                if (
+                    line.manufacture_date
+                    and line.expiry_date
+                    and line.manufacture_date > line.expiry_date
+                ):
+                    raise ValidationError(
+                        _(
+                            "Manufacture date (%(manufacture)s) for product '%(product)s' "
+                            "cannot be after its expiry date (%(expiry)s).",
+                            manufacture=line.manufacture_date,
+                            product=product.display_name,
+                            expiry=line.expiry_date,
+                        )
+                    )
+
+                # Minimum shelf-life check applies only when expiry is supplied.
                 minimum_shelf_life_days = max(
                     product_tmpl.minimum_shelf_life_days,
                     categ.minimum_shelf_life_days,

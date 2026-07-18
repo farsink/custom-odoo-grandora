@@ -21,9 +21,7 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//group[@name='expiry_and_lots']" position="after">
-                <group string="Receipt Batch Requirements" name="grandora_receipt_batch_requirements" invisible="tracking == 'none'">
-                    <field name="require_supplier_batch"/>
-                    <field name="require_expiry_date"/>
+                <group string="Receipt Batch Configuration" name="grandora_receipt_batch_requirements" invisible="tracking == 'none'">
                     <field name="minimum_shelf_life_days"/>
                 </group>
             </xpath>

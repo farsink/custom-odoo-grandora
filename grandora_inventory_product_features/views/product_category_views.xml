@@ -7,8 +7,6 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='removal_strategy_id']/ancestor::group" position="after">
                 <group string="Receipt Batch Configuration">
-                    <field name="require_supplier_batch"/>
-                    <field name="require_expiry_date"/>
                     <field name="minimum_shelf_life_days"/>
                 </group>
             </xpath>

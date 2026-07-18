@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_inherit_lot_defaults" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.lot.defaults</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="stock.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='full_traceability']" position="after">
+                <setting id="new_storable_products_lot_tracking"
+                         invisible="not group_stock_production_lot"
+                         help="Default newly created storable goods to lot tracking while preserving explicit product choices.">
+                    <field name="new_storable_products_lot_tracking"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>
