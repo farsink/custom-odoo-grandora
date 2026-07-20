@@ -43,7 +43,12 @@
                     <field name="landing_cost"
                            class="oe_inline"
                            widget="monetary"
+                           invisible="landing_cost_type == 'percentage'"
                            options="{'currency_field': 'cost_currency_id', 'field_digits': True}"/>
+                    <field name="landing_cost"
+                           class="oe_inline"
+                           invisible="landing_cost_type != 'percentage'"/>
+                    <field name="landing_cost_type" class="oe_inline"/>
                     <span groups="uom.group_uom">
                         per
                         <field name="uom_name" class="oe_inline"/>
@@ -76,7 +81,8 @@
             </xpath>
             <xpath expr="//field[@name='standard_price']" position="after">
                 <field name="base_cost" widget="monetary" options="{'currency_field': 'cost_currency_id'}" optional="show"/>
-                <field name="landing_cost" widget="monetary" options="{'currency_field': 'cost_currency_id'}" optional="show"/>
+                <field name="landing_cost_actual" widget="monetary" options="{'currency_field': 'cost_currency_id'}" optional="show"/>
+                <field name="landing_cost_type" optional="show"/>
                 <field name="total_cost" widget="monetary" options="{'currency_field': 'cost_currency_id'}" optional="show" readonly="1"/>
             </xpath>
         </field>

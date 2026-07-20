@@ -31,7 +31,7 @@ class SaleOrderLine(models.Model):
         help="Margin percentage based on selling price and product total cost.",
     )
 
-    @api.depends("product_id", "product_id.product_tmpl_id.landing_cost", "product_id.product_tmpl_id.total_cost", "currency_id", "company_id", "order_id.company_id")
+    @api.depends("product_id", "product_id.product_tmpl_id.landing_cost_actual", "product_id.product_tmpl_id.total_cost", "currency_id", "company_id", "order_id.company_id")
     def _compute_product_cost_fields(self):
         for line in self:
             product_template = line.product_id.product_tmpl_id
@@ -41,7 +41,7 @@ class SaleOrderLine(models.Model):
                 continue
             company = line.company_id or line.order_id.company_id or line.env.company
             company_currency = company.currency_id
-            line.landing_cost = line._convert_to_sol_currency(product_template.landing_cost or 0.0, company_currency)
+            line.landing_cost = line._convert_to_sol_currency(product_template.landing_cost_actual or 0.0, company_currency)
             line.total_cost = line._convert_to_sol_currency(product_template.total_cost or product_template.standard_price or 0.0, company_currency)
 
     @api.depends("price_unit", "discount", "total_cost")

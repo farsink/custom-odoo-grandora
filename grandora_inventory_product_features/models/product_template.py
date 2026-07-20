@@ -1,6 +1,7 @@
 import re
 
 from odoo import api, fields, models
+from odoo.exceptions import ValidationError
 from odoo.tools import str2bool
 
 
@@ -29,14 +30,28 @@ class ProductTemplate(models.Model):
         string="Landing Cost",
         min_display_digits="Product Price",
         tracking=True,
-        help="Additional landing/import/freight cost per unit.",
+        help="Additional landing/import/freight cost per unit, entered in the selected mode.",
+    )
+    landing_cost_type = fields.Selection(
+        selection=[("fixed", "QAR"), ("percentage", "%")],
+        string="Landing Cost Unit",
+        default="fixed",
+        required=True,
+        tracking=True,
+    )
+    landing_cost_actual = fields.Float(
+        string="Landing Cost (QAR)",
+        compute="_compute_total_cost",
+        store=True,
+        min_display_digits="Product Price",
+        help="Effective landing cost per unit in company currency.",
     )
     total_cost = fields.Float(
         string="Total Cost",
         compute="_compute_total_cost",
         store=True,
         min_display_digits="Product Price",
-        help="Computed as Cost + Landing Cost. Odoo's official Cost is synchronized to this value.",
+        help="Computed as Cost plus the effective landing cost. Odoo's official Cost is synchronized to this value.",
     )
     minimum_shelf_life_days = fields.Integer(
         string="Minimum Shelf Life (Days)",
@@ -44,10 +59,14 @@ class ProductTemplate(models.Model):
         help="Minimum number of days from receipt date to expiry date for this product.",
     )
 
-    @api.depends("base_cost", "landing_cost")
+    @api.depends("base_cost", "landing_cost", "landing_cost_type")
     def _compute_total_cost(self):
         for template in self:
-            template.total_cost = template.base_cost + template.landing_cost
+            landing_cost = template.landing_cost
+            if template.landing_cost_type == "percentage":
+                landing_cost = template.base_cost * landing_cost / 100.0
+            template.landing_cost_actual = landing_cost
+            template.total_cost = template.base_cost + landing_cost
 
     @api.model
     def default_get(self, fields_list):
@@ -187,6 +206,24 @@ class ProductTemplate(models.Model):
         if self.env.context.get("grandora_skip_total_cost_sync"):
             return super().write(vals)
         vals = dict(vals)
+        if "landing_cost_type" in vals and "landing_cost" not in vals:
+            if len(self) > 1:
+                return all(template.write(vals) for template in self)
+            template = self
+            if vals["landing_cost_type"] != template.landing_cost_type:
+                base_cost = vals.get("base_cost", template.base_cost)
+                if vals["landing_cost_type"] == "percentage":
+                    if template.landing_cost and not base_cost:
+                        raise ValidationError(
+                            "Set a base cost before converting a landing cost to a percentage."
+                        )
+                    vals["landing_cost"] = (
+                        template.landing_cost / base_cost * 100.0 if base_cost else 0.0
+                    )
+                else:
+                    vals["landing_cost"] = (
+                        base_cost * template.landing_cost / 100.0
+                    )
         skip_lot_sequence_sync = self.env.context.get(
             "grandora_skip_lot_sequence_sync"
         )
@@ -201,7 +238,7 @@ class ProductTemplate(models.Model):
         if "standard_price" in vals and "base_cost" not in vals:
             vals["base_cost"] = vals.get("standard_price") or 0.0
         res = super().write(vals)
-        if {"base_cost", "landing_cost", "standard_price"} & set(vals):
+        if {"base_cost", "landing_cost", "landing_cost_type", "standard_price"} & set(vals):
             self._grandora_sync_standard_price_from_total()
         if not skip_lot_sequence_sync and {"name", "tracking"} & set(vals):
             for template in self:
@@ -212,4 +249,4 @@ class ProductTemplate(models.Model):
 
     def _grandora_sync_standard_price_from_total(self):
         for template in self:
-            template.with_context(grandora_skip_total_cost_sync=True).standard_price = template.base_cost + template.landing_cost
+            template.with_context(grandora_skip_total_cost_sync=True).standard_price = template.total_cost

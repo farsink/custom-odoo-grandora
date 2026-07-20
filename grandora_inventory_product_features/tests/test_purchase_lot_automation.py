@@ -371,3 +371,33 @@ class TestPurchaseLotAutomation(TransactionCase):
         self.assertNotIn('name="action_add_batch"', view.arch_db)
         self.assertNotIn('name="action_generate_batch_lines"', view.arch_db)
         self.assertNotIn('name="batch_buttons"', view.arch_db)
+
+    def test_landing_cost_accepts_fixed_qar_or_a_base_cost_percentage(self):
+        product = self._create_product(
+            "Percentage Cost Product", base_cost=100.0, landing_cost=10.0
+        )
+        template = product.product_tmpl_id
+        self.assertEqual(template.landing_cost_actual, 10.0)
+        self.assertEqual(template.total_cost, 110.0)
+        self.assertEqual(template.standard_price, 110.0)
+
+        template.write({"landing_cost_type": "percentage"})
+        self.assertEqual(template.landing_cost, 10.0)
+        self.assertEqual(template.landing_cost_actual, 10.0)
+
+        template.write({"base_cost": 200.0})
+        self.assertEqual(template.landing_cost_actual, 20.0)
+        self.assertEqual(template.total_cost, 220.0)
+        self.assertEqual(template.standard_price, 220.0)
+
+        template.write({"landing_cost_type": "fixed"})
+        self.assertEqual(template.landing_cost, 20.0)
+        self.assertEqual(template.total_cost, 220.0)
+
+    def test_landing_cost_mode_conversion_requires_a_base_cost(self):
+        template = self._create_product(
+            "Zero Base Cost Product", base_cost=0.0, landing_cost=10.0
+        ).product_tmpl_id
+
+        with self.assertRaises(ValidationError):
+            template.write({"landing_cost_type": "percentage"})

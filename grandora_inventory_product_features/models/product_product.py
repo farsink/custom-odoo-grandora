@@ -16,4 +16,6 @@ class ProductProduct(models.Model):
                     and self.env["product.template"]._grandora_should_default_lot_tracking()
                 ):
                     vals["tracking"] = "lot"
-        return super().create(vals_list)
+        products = super().create(vals_list)
+        products.product_tmpl_id._grandora_sync_standard_price_from_total()
+        return products
