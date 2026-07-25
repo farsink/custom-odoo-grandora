@@ -34,7 +34,7 @@
                 .grandora-maroon { color: #8a151b; }
                 .grandora-gold { color: #b0966a; }
                 .grandora-pink { background: #f3e6ea; }
-                .grandora-table-head { background: #E4EAE2; }
+                .grandora-table-head { background: #e8ccce; }
                 .grandora-header { align-items: center; margin-bottom: 8px; padding-top: 4px; }
                 .grandora-brand-block { width: 38%; display: flex; align-items: center; gap: 8px; }
                 .grandora-lettermark { width: 58px; height: 58px; object-fit: contain; flex: 0 0 auto; }
@@ -54,7 +54,7 @@
                 .grandora-panel { min-height: 140px; padding: 8px 16px 8px 8px; border-right: 1px solid #000; display: flex; flex-direction: column; justify-content: space-between; }
                 .grandora-panel:last-child { border-right: 0; padding: 4px 8px 8px; display: block; }
                 .grandora-meta { margin-bottom: 8px; }
-                .grandora-meta-title { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; border-top: 2px solid #000; border-bottom: 2px solid #000; text-align: left; font-size: 16px; letter-spacing: .02em; }
+                .grandora-meta-title { display: flex; justify-content: center; align-items: center; padding: 6px 8px; border-top: 2px solid #000; border-bottom: 2px solid #000; text-align: center; font-size: 16px; letter-spacing: .02em; }
                 .grandora-meta-row { display: grid; grid-template-columns: 1.2fr 1fr; border-bottom: 1px solid #000; }
                 .grandora-meta-row:last-child { border-bottom: 0; }
                 .grandora-meta-cell { min-height: 86px; padding: 7px 10px; }
@@ -111,7 +111,7 @@
                     </div>
                     <div class="grandora-company grandora-maroon">
                         <div class="grandora-bold" style="font-size:13.5px; margin-bottom:4px;">Grandora Gourmet Trading W.L.L</div>
-                        <div>Tel : <span t-esc="o.company_id.phone or '77848974'"/></div>
+                        <div>Tel : <span t-esc="o.company_id.phone or '30302234'"/></div>
                         <div>P.O. Box : <span t-esc="o.company_id.zip or '30264'"/></div>
                         <div><span t-esc="o.company_id.city or 'Doha'"/> - <span t-esc="o.company_id.country_id.name or 'Qatar'"/></div>
                         <div>Email : <span t-esc="o.company_id.email or 'info@grandoragourmet.com'"/></div>
@@ -347,13 +347,6 @@
                 <t t-set="lang" t-value="o.partner_id.lang"/>
                 <t t-call="account.report_invoice_document" t-lang="lang"/>
             </t>
-            <script type="text/javascript">
-                window.addEventListener('load', function () {
-                    setTimeout(function () {
-                        window.print();
-                    }, 500);
-                });
-            </script>
         </t>
     </template>
 </odoo>
