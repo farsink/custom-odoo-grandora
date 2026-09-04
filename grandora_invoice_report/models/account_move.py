@@ -49,17 +49,12 @@ class AccountMove(models.Model):
         return _GRANDORA_LEADING_PRODUCT_CODE_RE.sub("", description)
 
     def action_print_pdf(self):
-        """Use Grandora's browser-native print view for customer invoices.
-
-        The standard Odoo button name is still ``action_print_pdf``; returning an
-        HTML report URL here makes the existing Invoice Print button open the
-        browser print layout instead of generating a wkhtmltopdf PDF.
-        """
+        """Open Grandora's 9.5 × 11 inch inkjet form for customer invoices."""
         self.ensure_one()
         if self.move_type in ("out_invoice", "out_refund", "out_receipt"):
             return {
                 "type": "ir.actions.act_url",
-                "url": f"/report/html/grandora_invoice_report.report_invoice_browser_print/{self.id}",
+                "url": f"/report/html/grandora_invoice_report.report_invoice_inkjet_print/{self.id}",
                 "target": "new",
             }
         return super().action_print_pdf()

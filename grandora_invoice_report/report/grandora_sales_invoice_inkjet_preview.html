@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Grandora Inkjet Values Preview — Letter</title>
+    <style>
+        /* Change only these positions while calibrating the physical Letter form. */
+        :root {
+            --invoice-to-left: .65in; --invoice-to-top: 1.55in;
+            --invoice-meta-left: 4.80in; --invoice-meta-top: 1.60in;
+            --delivery-to-left: .65in; --delivery-to-top: 2.55in;
+            --delivery-meta-left: 4.80in; --delivery-meta-top: 2.55in;
+            --lines-left: .50in; --lines-top: 3.90in; --line-row-height: .24in;
+            --sl-column-left: .00in; --code-column-left: .35in; --description-column-left: 1.05in;
+            --uom-column-left: 4.30in; --quantity-column-left: 5.15in; --price-column-left: 5.85in; --amount-column-left: 6.60in;
+            --words-left: .95in; --words-top: 8.08in;
+            --total-left: 6.65in; --total-top: 8.08in;
+            --remarks-left: .95in; --remarks-top: 8.43in;
+            --delivered-by-left: 6.50in; --delivered-by-top: 9.35in;
+            --delivered-date-left: 6.50in; --delivered-date-top: 10.00in;
+        }
+        @page { size: Letter portrait; margin: 0; }
+        * { box-sizing: border-box; }
+        html, body { width: 8.5in; min-height: 11in; margin: 0; padding: 0; background: #fff; }
+        body { color: #000; font: 10pt/1.15 "Times New Roman", Times, serif; }
+        .page { position: relative; width: 8.5in; height: 11in; overflow: hidden; }
+        .value { position: absolute; white-space: nowrap; }
+        .address { width: 3.45in; white-space: normal; }
+        .meta { width: 2.8in; }
+        .meta div { height: .20in; }
+        .line-items { position: absolute; left: var(--lines-left); top: var(--lines-top); width: 7.4in; }
+        .line-row { position: relative; height: var(--line-row-height); }
+        .line-cell { position: absolute; top: 0; white-space: nowrap; }
+        .sl { left: var(--sl-column-left); }
+        .code { left: var(--code-column-left); }
+        .description { left: var(--description-column-left); max-width: 3.1in; overflow: hidden; text-overflow: clip; }
+        .uom { left: var(--uom-column-left); }
+        .quantity { left: var(--quantity-column-left); }
+        .price { left: var(--price-column-left); }
+        .amount { left: var(--amount-column-left); }
+        @media screen { .page { margin: 12px auto; box-shadow: 0 0 10px rgba(0, 0, 0, .18); } }
+        @media print { .page { margin: 0; box-shadow: none; } }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <div class="value address" style="left:var(--invoice-to-left); top:var(--invoice-to-top);">
+            INVOICE TO:<br/>Mock Customer Restaurant<br/>Building 15, C Ring Road<br/>Doha, Qatar<br/>Tel no: 5512 3456
+        </div>
+        <div class="value meta" style="left:var(--invoice-meta-left); top:var(--invoice-meta-top);">
+            <div>INVOICE NO : INV/2026/00059</div><div>DATE : 04/09/2026</div><div>CURRENCY : QAR</div><div>P.O. NUMBER : PO-87421</div>
+        </div>
+        <div class="value address" style="left:var(--delivery-to-left); top:var(--delivery-to-top);">
+            DELIVERY TO:<br/>Mock Customer Restaurant<br/>West Bay, Zone 61<br/>Doha, Qatar<br/>Tel no: 5512 3456
+        </div>
+        <div class="value meta" style="left:var(--delivery-meta-left); top:var(--delivery-meta-top);">
+            <div>SALES PERSON : Demo Salesperson</div><div>TERMS : 30 Days</div><div>SO NUMBER : S00059</div><div>PRINTED : 04/09/2026 at 2:30 PM</div>
+        </div>
+
+        <div class="line-items">
+            <div class="line-row"><span class="line-cell sl">1</span><span class="line-cell code">PRD-001</span><span class="line-cell description">Premium Basmati Rice 5 kg</span><span class="line-cell uom">kg</span><span class="line-cell quantity">10.000</span><span class="line-cell price">22.50</span><span class="line-cell amount">225.00</span></div>
+            <div class="line-row"><span class="line-cell sl">2</span><span class="line-cell code">PRD-028</span><span class="line-cell description">Extra Virgin Olive Oil 1 L</span><span class="line-cell uom">pcs</span><span class="line-cell quantity">6.000</span><span class="line-cell price">38.00</span><span class="line-cell amount">228.00</span></div>
+            <div class="line-row"><span class="line-cell sl">3</span><span class="line-cell code">PRD-114</span><span class="line-cell description">Italian Tomato Paste 400 g</span><span class="line-cell uom">pcs</span><span class="line-cell quantity">12.000</span><span class="line-cell price">7.50</span><span class="line-cell amount">90.00</span></div>
+        </div>
+
+        <div class="value" style="left:var(--words-left); top:var(--words-top);">QAR Five Hundred Forty-Three Only</div>
+        <div class="value right" style="left:var(--total-left); top:var(--total-top); width:1.05in;">543.00</div>
+        <div class="value" style="left:var(--remarks-left); top:var(--remarks-top);">Keep refrigerated where applicable.</div>
+        <div class="value" style="left:var(--delivered-by-left); top:var(--delivered-by-top);">Demo Salesperson</div>
+        <div class="value" style="left:var(--delivered-date-left); top:var(--delivered-date-top);">04/09/2026</div>
+    </main>
+</body>
+</html>

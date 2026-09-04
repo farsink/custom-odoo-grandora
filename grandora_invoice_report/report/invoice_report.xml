@@ -14,6 +14,22 @@
         <field name="css_margins" eval="True"/>
     </record>
 
+    <record id="paperformat_grandora_invoice_inkjet" model="report.paperformat">
+        <field name="name">Grandora Invoice Inkjet Letter</field>
+        <field name="format">custom</field>
+        <field name="page_width">216</field>
+        <field name="page_height">279</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+        <field name="css_margins" eval="True"/>
+    </record>
+
     <record id="account.account_invoices" model="ir.actions.report">
         <field name="name">Invoice PDF</field>
         <field name="paperformat_id" ref="grandora_invoice_report.paperformat_grandora_invoice"/>
@@ -22,9 +38,9 @@
     <record id="account.account_invoices_without_payment" model="ir.actions.report">
         <field name="name">Print Invoice (Browser)</field>
         <field name="report_type">qweb-html</field>
-        <field name="report_name">grandora_invoice_report.report_invoice_browser_print</field>
-        <field name="report_file">grandora_invoice_report.report_invoice_browser_print</field>
-        <field name="paperformat_id" ref="grandora_invoice_report.paperformat_grandora_invoice"/>
+        <field name="report_name">grandora_invoice_report.report_invoice_inkjet_print</field>
+        <field name="report_file">grandora_invoice_report.report_invoice_inkjet_print</field>
+        <field name="paperformat_id" ref="grandora_invoice_report.paperformat_grandora_invoice_inkjet"/>
     </record>
 
     <record id="action_report_grandora_invoice_browser" model="ir.actions.report">

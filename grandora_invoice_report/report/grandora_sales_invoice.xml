@@ -349,4 +349,115 @@
             </t>
         </t>
     </template>
+
+    <template id="report_invoice_inkjet_print">
+        <t t-call="web.html_container">
+            <style type="text/css">
+                @page { size: Letter portrait; margin: 0; }
+                html, body { width: 8.5in; min-height: 11in; margin: 0 !important; padding: 0 !important; background: #fff !important; }
+                .grandora-inkjet-page {
+                    --invoice-to-left: .65in; --invoice-to-top: 1.55in;
+                    --invoice-meta-left: 4.80in; --invoice-meta-top: 1.60in;
+                    --delivery-to-left: .65in; --delivery-to-top: 2.55in;
+                    --delivery-meta-left: 4.80in; --delivery-meta-top: 2.55in;
+                    --lines-left: .50in; --lines-top: 3.90in; --line-row-height: .24in;
+                    --sl-column-left: .00in; --code-column-left: .30in; --description-column-left: 1.25in;
+                    --uom-column-left: 4.90in; --quantity-column-left: 5.55in; --price-column-left: 6.40in; --amount-column-left: 7.15in;
+                    --words-left: .95in; --words-top: 8.43in;
+                    --total-left: 6.65in; --total-top: 8.43in;
+                    --remarks-left: .95in; --remarks-top: 8.93in;
+                    --delivered-by-left: 6.50in; --delivered-by-top: 9.55in;
+                    --delivered-date-left: 6.70in; --delivered-date-top: 10.00in;
+                    position: relative;
+                    width: 8.5in;
+                    height: 11in;
+                    overflow: hidden;
+                    color: #000;
+                    font-family: "Times New Roman", Times, serif;
+                    font-size: 10pt;
+                    line-height: 1.15;
+                }
+                .grandora-inkjet-value { position: absolute; white-space: nowrap; }
+                .grandora-inkjet-address { width: 3.45in; white-space: normal; }
+                .grandora-inkjet-meta { width: 2.9in; }
+                .grandora-inkjet-meta div { height: .20in; white-space: nowrap; }
+                .grandora-inkjet-lines { position: absolute; left: var(--lines-left); top: var(--lines-top); width: 7.4in; }
+                .grandora-inkjet-line { position: relative; height: var(--line-row-height); }
+                .grandora-inkjet-line span { position: absolute; top: 0; white-space: nowrap; }
+                .grandora-inkjet-sl { left: var(--sl-column-left); }
+                .grandora-inkjet-code { left: var(--code-column-left); }
+                .grandora-inkjet-description { left: var(--description-column-left); max-width: 3.1in; overflow: hidden; text-overflow: clip; }
+                .grandora-inkjet-uom { left: var(--uom-column-left); }
+                .grandora-inkjet-quantity { left: var(--quantity-column-left); }
+                .grandora-inkjet-price { left: var(--price-column-left); }
+                .grandora-inkjet-amount { left: var(--amount-column-left); }
+                .grandora-inkjet-toolbar { display: none; }
+                @media screen {
+                    body { background: #e9ecef !important; }
+                    .grandora-inkjet-toolbar { position: sticky; top: 0; z-index: 1000; display: flex; justify-content: center; gap: 8px; padding: 12px; background: rgba(248, 249, 250, .96); border-bottom: 1px solid #d8dde2; font-family: Arial, sans-serif; }
+                    .grandora-inkjet-toolbar button { padding: 8px 14px; border: 1px solid #714b67; border-radius: 4px; background: #714b67; color: #fff; cursor: pointer; }
+                    .grandora-inkjet-toolbar .secondary { background: #fff; color: #714b67; }
+                    .grandora-inkjet-page { margin: 12px auto; box-shadow: 0 0 10px rgba(0, 0, 0, .18); }
+                }
+                @media print { .grandora-inkjet-toolbar { display: none !important; } }
+            </style>
+            <div class="grandora-inkjet-toolbar">
+                <button type="button" onclick="window.print();">Print</button>
+                <button type="button" class="secondary" onclick="window.close();">Close</button>
+            </div>
+            <t t-foreach="docs" t-as="o">
+                <t t-set="delivery_partner" t-value="o._grandora_delivery_partner()"/>
+                <t t-set="report_lines" t-value="o._grandora_report_lines()"/>
+                <div class="grandora-inkjet-page">
+                    <div class="grandora-inkjet-value grandora-inkjet-address" style="left:var(--invoice-to-left); top:var(--invoice-to-top);">
+                        <div>INVOICE TO:</div>
+                        <div t-esc="o.partner_id.name or ''"/>
+                        <div><span t-esc="o.partner_id.street or ''"/><span t-if="o.partner_id.street and o.partner_id.street2">, </span><span t-esc="o.partner_id.street2 or ''"/></div>
+                        <div><span t-esc="o.partner_id.city or ''"/><span t-if="o.partner_id.city and o.partner_id.country_id">, </span><span t-esc="o.partner_id.country_id.name or ''"/></div>
+                        <div>Tel no: <span t-esc="o.partner_id.phone or o.partner_id.mobile or ''"/></div>
+                    </div>
+                    <div class="grandora-inkjet-value grandora-inkjet-meta" style="left:var(--invoice-meta-left); top:var(--invoice-meta-top);">
+                        <div>INVOICE NO : <span t-esc="o.name if o.name and o.name != '/' else 'Draft'"/></div>
+                        <div>DATE : <span t-esc="o.invoice_date and o.invoice_date.strftime('%d/%m/%Y') or ''"/></div>
+                        <div>CURRENCY : <span t-esc="o.currency_id.name or ''"/></div>
+                        <div>P.O. NUMBER : <span t-esc="o.ref or ''"/></div>
+                    </div>
+                    <div class="grandora-inkjet-value grandora-inkjet-address" style="left:var(--delivery-to-left); top:var(--delivery-to-top);">
+                        <div>DELIVERY TO:</div>
+                        <div t-esc="delivery_partner.name or ''"/>
+                        <div><span t-esc="delivery_partner.street or ''"/><span t-if="delivery_partner.street and delivery_partner.street2">, </span><span t-esc="delivery_partner.street2 or ''"/></div>
+                        <div><span t-esc="delivery_partner.city or ''"/><span t-if="delivery_partner.city and delivery_partner.country_id">, </span><span t-esc="delivery_partner.country_id.name or ''"/></div>
+                        <div>Tel no: <span t-esc="delivery_partner.phone or delivery_partner.mobile or ''"/></div>
+                    </div>
+                    <div class="grandora-inkjet-value grandora-inkjet-meta" style="left:var(--delivery-meta-left); top:var(--delivery-meta-top);">
+                        <div>SALES PERSON : <span t-esc="o.invoice_user_id.name or o.user_id.name or ''"/></div>
+                        <div>TERMS : <span t-esc="o.invoice_payment_term_id.name or ''"/></div>
+                        <div>SO NUMBER : <span t-esc="o.sale_order_number or o.invoice_origin or ''"/></div>
+                        <div>PRINTED : <span t-esc="o._grandora_printed_at()"/></div>
+                    </div>
+
+                    <!-- ponytail: this calibrated form fits 19 rows; add a continuation report if invoices exceed this capacity. -->
+                    <div class="grandora-inkjet-lines">
+                        <t t-foreach="report_lines" t-as="line">
+                            <div t-if="line_index &lt; 19" class="grandora-inkjet-line">
+                                <span class="grandora-inkjet-sl" t-esc="line_index + 1"/>
+                                <span class="grandora-inkjet-code" t-esc="line.product_id.default_code or ''"/>
+                                <span class="grandora-inkjet-description" t-esc="o._grandora_line_description(line)"/>
+                                <span class="grandora-inkjet-uom" t-esc="line.product_uom_id.name or ''"/>
+                                <span class="grandora-inkjet-quantity" t-esc="'%.3f' % line.quantity"/>
+                                <span class="grandora-inkjet-price" t-esc="'%.2f' % line.price_unit"/>
+                                <span class="grandora-inkjet-amount" t-esc="'{:,.2f}'.format(line.price_subtotal)"/>
+                            </div>
+                        </t>
+                    </div>
+
+                    <div class="grandora-inkjet-value" style="left:var(--words-left); top:var(--words-top);" t-esc="o.amount_total_words or o.currency_id.amount_to_text(o.amount_total)"/>
+                    <div class="grandora-inkjet-value" style="left:var(--total-left); top:var(--total-top);" t-esc="'{:,.2f}'.format(o.amount_total)"/>
+                    <div class="grandora-inkjet-value" style="left:var(--remarks-left); top:var(--remarks-top);" t-esc="o.grandora_remarks or ''"/>
+                    <div class="grandora-inkjet-value" style="left:var(--delivered-by-left); top:var(--delivered-by-top);" t-esc="o.invoice_user_id.name or o.user_id.name or ''"/>
+                    <div class="grandora-inkjet-value" style="left:var(--delivered-date-left); top:var(--delivered-date-top);" t-esc="o.invoice_date and o.invoice_date.strftime('%d/%m/%Y') or ''"/>
+                </div>
+            </t>
+        </t>
+    </template>
 </odoo>
