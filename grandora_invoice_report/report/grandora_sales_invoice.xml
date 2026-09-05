@@ -34,7 +34,7 @@
                 .grandora-maroon { color: #8a151b; }
                 .grandora-gold { color: #b0966a; }
                 .grandora-pink { background: #f3e6ea; }
-                .grandora-table-head { background: #e8ccce; }
+                .grandora-table-head { background: #b0966a; }
                 .grandora-header { align-items: center; margin-bottom: 8px; padding-top: 4px; }
                 .grandora-brand-block { width: 38%; display: flex; align-items: center; gap: 8px; }
                 .grandora-lettermark { width: 58px; height: 58px; object-fit: contain; flex: 0 0 auto; }
