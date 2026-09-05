@@ -17,6 +17,12 @@
             <xpath expr="//label[@for='standard_price']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+            <xpath expr="//field[@name='taxes_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='supplier_taxes_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
             <xpath expr="//div[@name='standard_price_uom']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
@@ -75,14 +81,26 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_tree_view"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='sale_ok']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="width">400</attribute>
+            </xpath>
+            <xpath expr="//field[@name='product_tag_ids']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='standard_price']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
             <xpath expr="//field[@name='default_code']" position="after">
-                <field name="brand_id" optional="show"/>
-                <field name="item_group_id" optional="show"/>
+                <field name="brand_id" column_invisible="1"/>
+                <field name="item_group_id" column_invisible="1" optional="show"/>
             </xpath>
             <xpath expr="//field[@name='standard_price']" position="after">
                 <field name="base_cost" widget="monetary" options="{'currency_field': 'cost_currency_id'}" optional="show"/>
-                <field name="landing_cost_actual" widget="monetary" options="{'currency_field': 'cost_currency_id'}" optional="show"/>
-                <field name="landing_cost_type" optional="show"/>
+                <field name="landing_cost_actual" column_invisible="1"/>
+                <field name="landing_cost_type" column_invisible="1"/>
                 <field name="total_cost" widget="monetary" options="{'currency_field': 'cost_currency_id'}" optional="show" readonly="1"/>
             </xpath>
         </field>
