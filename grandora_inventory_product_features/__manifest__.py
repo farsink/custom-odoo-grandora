@@ -19,6 +19,7 @@
         "views/product_brand_views.xml",
         "views/product_item_group_views.xml",
         "views/product_template_views.xml",
+        "views/inventory_menu_views.xml",
         "views/product_category_views.xml",
         "views/stock_picking_views.xml",
         "views/stock_quant_views.xml",
