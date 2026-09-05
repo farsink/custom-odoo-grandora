@@ -7,6 +7,7 @@ Grandora contact-statement workflow and ledger-style output for the vendored `pa
 - Opens a date-selection wizard from the Activity Statement and Outstanding Statement buttons on a contact.
 - Uses a current-month activity period and today's outstanding “as at” date by default.
 - Presents statements as Date, Invoice no., Description, Debit, Credit, and Balance.
+- Uses the existing branded browser-print template for the wizard’s View action.
 
 ## Models
 

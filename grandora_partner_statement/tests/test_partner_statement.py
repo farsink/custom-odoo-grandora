@@ -36,6 +36,10 @@ class TestPartnerStatement(TransactionCase):
             active_ids=self.partner.ids
         ).create({"date_end": fields.Date.from_string("2026-02-15")})
         self.assertEqual(wizard.date_start, fields.Date.from_string("2026-02-01"))
+        self.assertEqual(
+            wizard.button_export_html()["report_name"],
+            "partner_statement.activity_statement_browser",
+        )
 
         data = wizard._prepare_statement()
         report = self.env["report.partner_statement.activity_statement"]._get_report_values(
@@ -46,3 +50,12 @@ class TestPartnerStatement(TransactionCase):
         ]["lines"]
         current_line = next(line for line in lines if line["move_id"] == current_invoice.name)
         self.assertEqual(current_line["balance"], 200.0)
+
+    def test_outstanding_statement_view_uses_browser_template(self):
+        wizard = self.env["outstanding.statement.wizard"].with_context(
+            active_ids=self.partner.ids
+        ).create({})
+        self.assertEqual(
+            wizard.button_export_html()["report_name"],
+            "partner_statement.outstanding_statement_browser",
+        )
