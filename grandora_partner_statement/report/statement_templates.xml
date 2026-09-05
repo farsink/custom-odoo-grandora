@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="activity_balance" inherit_id="partner_statement.activity_balance">
+        <xpath expr="//table" position="replace">
+            <table class="table table-condensed table-statement">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Invoice No.</th>
+                        <th>Description</th>
+                        <th class="amount">Debit</th>
+                        <th class="amount">Credit</th>
+                        <th class="amount">Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span t-out="d['prior_day']" /></td>
+                        <td colspan="4">Opening Balance</td>
+                        <td class="amount">
+                            <span t-out="currency['balance_forward']" t-options="{'widget': 'monetary', 'display_currency': display_currency}" />
+                        </td>
+                    </tr>
+                    <tr t-foreach="currency['lines']" t-as="line">
+                        <td><span t-out="line['date']" /></td>
+                        <td><span t-out="line['move_id']" /></td>
+                        <td>
+                            <span t-out="line['name'] if line['name'] != '/' else line['ref']" />
+                        </td>
+                        <td class="amount">
+                            <span t-out="line['debit']" t-options="{'widget': 'monetary', 'display_currency': display_currency}" />
+                        </td>
+                        <td class="amount">
+                            <span t-out="line['credit']" t-options="{'widget': 'monetary', 'display_currency': display_currency}" />
+                        </td>
+                        <td class="amount">
+                            <span t-out="line['balance']" t-options="{'widget': 'monetary', 'display_currency': display_currency}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span t-out="d['end']" /></td>
+                        <td colspan="4">Ending Balance</td>
+                        <td class="amount">
+                            <span t-out="currency['amount_due']" t-options="{'widget': 'monetary', 'display_currency': display_currency}" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+    </template>
+
+    <template id="outstanding_balance" inherit_id="partner_statement.outstanding_balance">
+        <xpath expr="//table" position="replace">
+            <table class="table table-sm table-statement">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Invoice No.</th>
+                        <th>Description</th>
+                        <th class="amount">Debit</th>
+                        <th class="amount">Credit</th>
+                        <th class="amount">Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="currency[line_type]" t-as="line">
+                        <td><span t-out="line['date']" /></td>
+                        <td><span t-out="line['move_id']" /></td>
+                        <td>
+                            <span t-out="line['name'] if line['name'] != '/' else line['ref']" />
+                        </td>
+                        <td class="amount">
+                            <span t-out="line['debit']" t-options="{'widget': 'monetary', 'display_currency': display_currency}" />
+                        </td>
+                        <td class="amount">
+                            <span t-out="line['credit']" t-options="{'widget': 'monetary', 'display_currency': display_currency}" />
+                        </td>
+                        <td class="amount">
+                            <span t-out="line['balance']" t-options="{'widget': 'monetary', 'display_currency': display_currency}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span t-out="ending_date" /></td>
+                        <td colspan="4">Ending Balance</td>
+                        <td class="amount">
+                            <span t-out="ending_amount" t-options="{'widget': 'monetary', 'display_currency': display_currency}" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+    </template>
+
+    <template id="browser_statement_document" inherit_id="partner_statement.browser_statement_document">
+        <xpath expr="//table[@class='gs-table']" position="replace">
+            <table class="gs-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Invoice No.</th>
+                        <th>Description</th>
+                        <th class="amount">Debit</th>
+                        <th class="amount">Credit</th>
+                        <th class="amount">Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-if="is_activity">
+                        <td><span t-esc="d['prior_day']" /></td>
+                        <td colspan="4">Opening Balance</td>
+                        <td class="amount">
+                            <span t-esc="currency['balance_forward']" t-options="{'widget': 'monetary', 'display_currency': display_currency}" />
+                        </td>
+                    </tr>
+                    <tr t-foreach="currency['lines']" t-as="line">
+                        <td><span t-esc="line['date']" /></td>
+                        <td><span t-esc="line['move_id']" /></td>
+                        <td><span t-esc="line['name'] if line['name'] != '/' else line['ref']" /></td>
+                        <td class="amount">
+                            <span t-esc="line['debit']" t-options="{'widget': 'monetary', 'display_currency': display_currency}" />
+                        </td>
+                        <td class="amount">
+                            <span t-esc="line['credit']" t-options="{'widget': 'monetary', 'display_currency': display_currency}" />
+                        </td>
+                        <td class="amount">
+                            <span t-esc="line['balance']" t-options="{'widget': 'monetary', 'display_currency': display_currency}" />
+                        </td>
+                    </tr>
+                    <tr class="summary">
+                        <td><span t-esc="d['end']" /></td>
+                        <td colspan="4">Ending Balance</td>
+                        <td class="amount">
+                            <span t-esc="currency['amount_due']" t-options="{'widget': 'monetary', 'display_currency': display_currency}" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+    </template>
+</odoo>

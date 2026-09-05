@@ -10,6 +10,7 @@ Each module has its own `README.md` documenting implementation and fields — re
 - `sale_lot_margin` — batch-specific sale margins from Grandora product total cost. ([README](sale_lot_margin/README.md))
 - `grandora_onhand_batch_dashboard` — on-hand batch cost dashboard (SQL view). ([README](grandora_onhand_batch_dashboard/README.md))
 - `grandora_invoice_report` — Grandora browser-print invoice layout + SO/invoice metadata. ([README](grandora_invoice_report/README.md))
+- `grandora_partner_statement` — date-aware contact statements with Grandora ledger-style output. ([README](grandora_partner_statement/README.md))
 - `custom_admin_home` — admin-only apps grid home screen. ([README](custom_admin_home/README.md))
 - `business_inventory_sales` — sandbox starter module for workflow testing. ([README](business_inventory_sales/README.md))
 
