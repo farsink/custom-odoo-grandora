@@ -3,14 +3,7 @@ from odoo import _, models
 from odoo.addons.report_xlsx_helper.report.report_xlsx_format import FORMATS
 
 
-LEDGER_HEADERS = [
-    _("Date"),
-    _("Invoice No."),
-    _("Description"),
-    _("Debit"),
-    _("Credit"),
-    _("Balance"),
-]
+LEDGER_HEADERS = ["Date", "Invoice No.", "Description", "Debit", "Credit", "Balance"]
 
 
 def _description(line):
@@ -27,7 +20,7 @@ class LedgerStatementXlsx(models.AbstractModel):
             {
                 "col_pos": position,
                 "sheet_func": "write",
-                "args": (header, FORMATS["format_theader_yellow_center"]),
+                "args": (_(header), FORMATS["format_theader_yellow_center"]),
             }
             for position, header in enumerate(LEDGER_HEADERS)
         ]

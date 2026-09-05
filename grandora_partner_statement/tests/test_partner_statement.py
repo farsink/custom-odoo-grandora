@@ -9,7 +9,7 @@ class TestPartnerStatement(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.partner = cls.env.ref("base.res_partner_2")
+        cls.partner = cls.env["res.partner"].create({"name": "Statement Test Partner"})
 
     @freeze_time("2026-02-15 08:00")
     def test_contact_activity_statement_uses_current_month_and_running_balance(self):

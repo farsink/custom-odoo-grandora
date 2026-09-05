@@ -92,7 +92,7 @@
     </template>
 
     <template id="browser_statement_document" inherit_id="partner_statement.browser_statement_document">
-        <xpath expr="//table[@class='gs-table']" position="replace">
+        <xpath expr="//table[hasclass('gs-table') and not(hasclass('gs-aging'))]" position="replace">
             <table class="gs-table">
                 <thead>
                     <tr>
