@@ -451,7 +451,7 @@
                         </t>
                     </div>
 
-                    <div class="grandora-inkjet-value" style="left:var(--words-left); top:var(--words-top);" t-esc="o.amount_total_words or o.currency_id.amount_to_text(o.amount_total)"/>
+                    <div class="grandora-inkjet-value" style="left:var(--words-left); top:var(--words-top);" t-esc="(o.amount_total_words or o.currency_id.amount_to_text(o.amount_total)).upper()"/>
                     <div class="grandora-inkjet-value" style="left:var(--total-left); top:var(--total-top);" t-esc="'{:,.2f}'.format(o.amount_total)"/>
                     <div class="grandora-inkjet-value" style="left:var(--remarks-left); top:var(--remarks-top);" t-esc="o.grandora_remarks or ''"/>
                     <div class="grandora-inkjet-value" style="left:var(--delivered-by-left); top:var(--delivered-by-top);" t-esc="o.invoice_user_id.name or o.user_id.name or ''"/>
