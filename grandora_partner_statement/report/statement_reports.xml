@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="partner_statement.action_print_activity_statement" model="ir.actions.report">
+        <field name="print_report_name">('Statement-Activity-%s-%s' % ((object.name or 'statement').replace('/', '-'), time.strftime('%Y-%m-%d')))</field>
+    </record>
+    <record id="partner_statement.action_print_outstanding_statement" model="ir.actions.report">
+        <field name="print_report_name">('Statement-Outstanding-%s-%s' % ((object.name or 'statement').replace('/', '-'), time.strftime('%Y-%m-%d')))</field>
+    </record>
+</odoo>

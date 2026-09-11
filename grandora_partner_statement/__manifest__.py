@@ -9,6 +9,7 @@
     "data": [
         "views/statement_wizard_views.xml",
         "report/statement_templates.xml",
+        "report/statement_reports.xml",
     ],
     "installable": True,
     "application": False,
