@@ -82,3 +82,67 @@ class TestPartnerStatement(TransactionCase):
         self.assertTrue(
             filename.startswith("Statement-Activity-Statement Test Partner-")
         )
+
+    def test_partial_payment_and_unapplied_advance(self):
+        today = fields.Date.context_today(self.env.user)
+        form = Form(
+            self.env["account.move"].with_context(default_move_type="out_invoice")
+        )
+        form.partner_id = self.partner
+        form.invoice_date = today.replace(day=1)
+        with form.invoice_line_ids.new() as line:
+            line.name = "Audit test"
+            line.price_unit = 1290
+        invoice = form.save()
+        invoice.action_post()
+
+        pay = Form(
+            self.env["account.payment.register"].with_context(
+                active_model="account.move", active_ids=invoice.ids
+            )
+        )
+        pay.amount = 1000
+        pay.save().action_create_payments()
+        self.assertEqual(invoice.payment_state, "partial")
+
+        advance = Form(
+            self.env["account.payment"].with_context(
+                default_partner_id=self.partner.id,
+                default_partner_type="customer",
+                default_payment_type="inbound",
+            )
+        )
+        advance.amount = 200
+        advance.save().action_post()
+
+        wizard = self.env["activity.statement.wizard"].with_context(
+            active_ids=self.partner.ids
+        ).create({})
+        values = self.env[
+            "report.partner_statement.activity_statement"
+        ]._get_report_values(self.partner.ids, wizard._prepare_statement())
+        currency_data = next(
+            iter(values["data"][self.partner.id]["currencies"].values())
+        )
+        self.assertEqual(currency_data["amount_due"], 90.0)
+        self.assertEqual(
+            [line["balance"] for line in currency_data["lines"]],
+            [1290.0, 290.0, 90.0],
+        )
+
+        outstanding_wizard = self.env["outstanding.statement.wizard"].with_context(
+            active_ids=self.partner.ids
+        ).create({})
+        outstanding = self.env[
+            "report.partner_statement.outstanding_statement"
+        ]._get_report_values(
+            self.partner.ids, outstanding_wizard._prepare_statement()
+        )
+        outstanding_data = next(
+            iter(outstanding["data"][self.partner.id]["currencies"].values())
+        )
+        self.assertEqual(outstanding_data["amount_due"], 90.0)
+        self.assertEqual(
+            sorted(line["open_amount"] for line in outstanding_data["lines"]),
+            [-200.0, 290.0],
+        )

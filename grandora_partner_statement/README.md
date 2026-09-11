@@ -10,6 +10,19 @@ Grandora contact-statement workflow and ledger-style output for the vendored `pa
 - Uses the existing branded browser-print template for the wizard’s View action.
 - Names saved PDFs and browser Save-as-PDF files `<Customer> - <Activity|Outstanding> Statement - <YYYY-MM-DD>`.
 
+## Partial payments, write-offs, and advances (audited)
+
+- Partial payment: the invoice row keeps its full debit while the payment row
+  carries the credit, so the running Balance settles on the residual; the
+  outstanding statement shows the invoice with the residual open amount.
+- Write-off: Odoo books the difference inside the payment entry, so it is
+  absorbed into the payment row and the invoice closes fully.
+- Unapplied advance: appears as a credit row (negative running balance) and as
+  an open credit line on the outstanding statement.
+- Known limitation: payment rows are labeled with the generic description
+  “Payment” — a custom payment reference/memo is not shown (upstream OCA
+  grouping labels all bank/cash lines that way).
+
 ## Models
 
 | Model | Type | File |
