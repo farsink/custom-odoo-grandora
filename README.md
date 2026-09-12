@@ -11,7 +11,7 @@ Custom business modules for the local Odoo 18 Community development setup.
 | [`grandora_inventory_product_features`](grandora_inventory_product_features/README.md) | 18.0.1.0.0 | Product list defaults |
 | [`sale_lot_margin`](sale_lot_margin/README.md) | 18.0.1.0.0 | Percentage landing-cost entry |
 | [`grandora_onhand_batch_dashboard`](grandora_onhand_batch_dashboard/README.md) | 18.0.1.0.0 | Batch dashboard improvements |
-| [`grandora_invoice_report`](grandora_invoice_report/README.md) | 18.0.1.0.0 | Title-case amount words |
+| [`grandora_invoice_report`](grandora_invoice_report/README.md) | 18.0.1.0.1 | In-Odoo inkjet invoice preview |
 | [`grandora_partner_statement`](grandora_partner_statement/README.md) | 18.0.1.0.1 | Payment memo descriptions in statements |
 | [`custom_admin_home`](custom_admin_home/README.md) | 18.0.1.0.0 | Admin home access check |
 | [`business_inventory_sales`](business_inventory_sales/README.md) | 18.0.1.0.0 | Inventory/Sales starter fields |

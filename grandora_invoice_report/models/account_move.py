@@ -1,6 +1,6 @@
 import re
 
-from odoo import fields, models
+from odoo import _, fields, models
 from odoo.tools import format_datetime
 
 
@@ -49,12 +49,13 @@ class AccountMove(models.Model):
         return _GRANDORA_LEADING_PRODUCT_CODE_RE.sub("", description)
 
     def action_print_pdf(self):
-        """Open Grandora's 9.5 × 11 inch inkjet form for customer invoices."""
+        """Show the customer invoice form inside the Odoo client."""
         self.ensure_one()
         if self.move_type in ("out_invoice", "out_refund", "out_receipt"):
             return {
-                "type": "ir.actions.act_url",
-                "url": f"/report/html/grandora_invoice_report.report_invoice_inkjet_print/{self.id}",
-                "target": "new",
+                "type": "ir.actions.client",
+                "tag": "grandora_invoice_report.invoice_preview",
+                "name": _("Invoice Preview"),
+                "params": {"invoice_id": self.id},
             }
         return super().action_print_pdf()

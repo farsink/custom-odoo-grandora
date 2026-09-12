@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="grandora_invoice_report.InvoicePreview">
+        <main class="o_grandora_invoice_preview h-100">
+            <iframe
+                class="o_grandora_invoice_preview_frame"
+                t-att-src="reportUrl"
+                title="Invoice preview"
+            />
+        </main>
+    </t>
+</templates>

@@ -403,7 +403,7 @@
             </style>
             <div class="grandora-inkjet-toolbar">
                 <button type="button" onclick="window.print();">Print</button>
-                <button type="button" class="secondary" onclick="window.close();">Close</button>
+                <button type="button" class="secondary" onclick="window.parent === window ? window.close() : window.parent.postMessage('grandora_invoice_report.close_preview', window.location.origin);">Close</button>
             </div>
             <t t-foreach="docs" t-as="o">
                 <t t-set="delivery_partner" t-value="o._grandora_delivery_partner()"/>
