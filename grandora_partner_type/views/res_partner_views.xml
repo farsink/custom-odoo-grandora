@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_partner_type" model="ir.ui.view">
+        <field name="name">res.partner.form.partner.type</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/*[1]" position="before">
+                <header>
+                    <div class="d-flex align-items-center gap-1">
+                        <span>Customer</span>
+                        <field name="is_customer" widget="boolean_toggle" options="{'autosave': True}"/>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <span>Vendor</span>
+                        <field name="is_vendor" widget="boolean_toggle" options="{'autosave': True}"/>
+                    </div>
+                </header>
+            </xpath>
+            <xpath expr="//group[@name='sale']" position="inside">
+                <field name="is_customer"/>
+            </xpath>
+            <xpath expr="//group[@name='purchase']" position="inside">
+                <field name="is_vendor"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_tree_partner_type" model="ir.ui.view">
+        <field name="name">res.partner.list.partner.type</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <field name="email" position="after">
+                <field name="is_customer" optional="show"/>
+                <field name="is_vendor" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_res_partner_filter_partner_type" model="ir.ui.view">
+        <field name="name">res.partner.search.partner.type</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <filter name="type_person" position="before">
+                <filter string="Customers" name="filter_customers" domain="[('is_customer', '=', True)]"/>
+                <filter string="Vendors" name="filter_vendors" domain="[('is_vendor', '=', True)]"/>
+                <separator/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="action_contacts_customers" model="ir.actions.act_window">
+        <field name="name">Customers</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('is_customer', '=', True)]</field>
+        <field name="context">{'default_is_customer': True, 'default_is_vendor': False, 'default_is_company': True}</field>
+        <field name="search_view_id" ref="base.view_res_partner_filter"/>
+    </record>
+
+    <record id="action_contacts_vendors" model="ir.actions.act_window">
+        <field name="name">Vendors</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('is_vendor', '=', True)]</field>
+        <field name="context">{'default_is_customer': False, 'default_is_vendor': True, 'default_is_company': True}</field>
+        <field name="search_view_id" ref="base.view_res_partner_filter"/>
+    </record>
+
+    <menuitem id="menu_contacts_customers" name="Customers" parent="contacts.menu_contacts"
+        action="action_contacts_customers" sequence="3"/>
+    <menuitem id="menu_contacts_vendors" name="Vendors" parent="contacts.menu_contacts"
+        action="action_contacts_vendors" sequence="4"/>
+</odoo>
