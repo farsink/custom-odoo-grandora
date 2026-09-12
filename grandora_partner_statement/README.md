@@ -19,9 +19,9 @@ Grandora contact-statement workflow and ledger-style output for the vendored `pa
   absorbed into the payment row and the invoice closes fully.
 - Unapplied advance: appears as a credit row (negative running balance) and as
   an open credit line on the outstanding statement.
-- Known limitation: payment rows are labeled with the generic description
-  “Payment” — a custom payment reference/memo is not shown (upstream OCA
-  grouping labels all bank/cash lines that way).
+- Payment description: uses the payment Memo when provided. Without a memo,
+  it uses `Payment Received – <Journal Name>` (or `Payment Sent – <Journal Name>`
+  for outbound payments).
 
 ## Models
 

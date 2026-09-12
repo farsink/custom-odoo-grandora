@@ -2,19 +2,21 @@
 
 Custom business modules for the local Odoo 18 Community development setup.
 
-## Grandora modules
+## Custom module state
 
-Each module has its own `README.md` documenting implementation and fields — read it before changing that module.
+`__manifest__.py` is the canonical version. This table is a compact index; update its row whenever a custom module changes.
 
-- `grandora_inventory_product_features` — core: product references, brand/item group, base/landing cost, receipt batches with auto lot generation. **Other Grandora modules depend on it.** ([README](grandora_inventory_product_features/README.md))
-- `sale_lot_margin` — batch-specific sale margins from Grandora product total cost. ([README](sale_lot_margin/README.md))
-- `grandora_onhand_batch_dashboard` — on-hand batch cost dashboard (SQL view). ([README](grandora_onhand_batch_dashboard/README.md))
-- `grandora_invoice_report` — Grandora browser-print invoice layout + SO/invoice metadata. ([README](grandora_invoice_report/README.md))
-- `grandora_partner_statement` — date-aware contact statements with Grandora ledger-style output. ([README](grandora_partner_statement/README.md))
-- `custom_admin_home` — admin-only apps grid home screen. ([README](custom_admin_home/README.md))
-- `business_inventory_sales` — sandbox starter module for workflow testing. ([README](business_inventory_sales/README.md))
+| Addon | Version | Latest functional change |
+|---|---|---|
+| [`grandora_inventory_product_features`](grandora_inventory_product_features/README.md) | 18.0.1.0.0 | Product list defaults |
+| [`sale_lot_margin`](sale_lot_margin/README.md) | 18.0.1.0.0 | Percentage landing-cost entry |
+| [`grandora_onhand_batch_dashboard`](grandora_onhand_batch_dashboard/README.md) | 18.0.1.0.0 | Batch dashboard improvements |
+| [`grandora_invoice_report`](grandora_invoice_report/README.md) | 18.0.1.0.0 | Title-case amount words |
+| [`grandora_partner_statement`](grandora_partner_statement/README.md) | 18.0.1.0.1 | Payment memo descriptions in statements |
+| [`custom_admin_home`](custom_admin_home/README.md) | 18.0.1.0.0 | Admin home access check |
+| [`business_inventory_sales`](business_inventory_sales/README.md) | 18.0.1.0.0 | Inventory/Sales starter fields |
 
-See root `AGENTS.md` → "Custom Addon Reference Docs" for the dependency map and rules for adding fields / linking addons.
+See root `AGENTS.md` → "Custom Addon Reference Docs" for dependency and field-reuse rules.
 
 ## Vendored OCA modules
 

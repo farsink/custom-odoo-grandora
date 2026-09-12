@@ -102,6 +102,7 @@ class TestPartnerStatement(TransactionCase):
             )
         )
         pay.amount = 1000
+        pay.communication = "INV/2026/01035 Partial"
         pay.save().action_create_payments()
         self.assertEqual(invoice.payment_state, "partial")
 
@@ -113,7 +114,9 @@ class TestPartnerStatement(TransactionCase):
             )
         )
         advance.amount = 200
-        advance.save().action_post()
+        advance_payment = advance.save()
+        advance_payment.memo = False
+        advance_payment.action_post()
 
         wizard = self.env["activity.statement.wizard"].with_context(
             active_ids=self.partner.ids
@@ -129,6 +132,26 @@ class TestPartnerStatement(TransactionCase):
             [line["balance"] for line in currency_data["lines"]],
             [1290.0, 290.0, 90.0],
         )
+        self.assertEqual(
+            next(line for line in currency_data["lines"] if line["credit"] == 1000)[
+                "ref"
+            ],
+            "INV/2026/01035 Partial",
+        )
+        self.assertEqual(
+            next(line for line in currency_data["lines"] if line["credit"] == 200)[
+                "ref"
+            ],
+            "Payment Received – Bank",
+        )
+
+        browser_report = self.env.ref(
+            "partner_statement.action_print_activity_statement_browser"
+        )
+        html, _ = browser_report._render_qweb_html(
+            browser_report.report_name, self.partner.ids, data=wizard._prepare_statement()
+        )
+        self.assertIn("INV/2026/01035 Partial", html.decode())
 
         outstanding_wizard = self.env["outstanding.statement.wizard"].with_context(
             active_ids=self.partner.ids
@@ -145,4 +168,10 @@ class TestPartnerStatement(TransactionCase):
         self.assertEqual(
             sorted(line["open_amount"] for line in outstanding_data["lines"]),
             [-200.0, 290.0],
+        )
+        self.assertEqual(
+            next(line for line in outstanding_data["lines"] if line["credit"] == 200)[
+                "ref"
+            ],
+            "Payment Received – Bank",
         )
